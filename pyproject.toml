@@ -1,0 +1,7 @@
+[project]
+name = "context-recognition-ml"
+version = "0.1.0"
+description = "ML project for multimodal user context recognition"
+readme = "README.md"
+requires-python = ">=3.12.7"
+dependencies = []

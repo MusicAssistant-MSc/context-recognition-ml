@@ -234,3 +234,18 @@ https://developer.spotify.com/documentation/web-api
 InCarMusic, GTZAN, Music4All, MTurk, MER60, MediaEval Emotion, AMG240, EMOTIONS, EMOPIA
 
 
+## 3. Zbiory wybrane do dalszej analizy
+### 3.1. WISDM
+Model ruchowy
+
+### 3.2. PAMAP2
+[Opcjonalnie] Model ruchowy
+
+### 3.3. WESAD
+Model biometryczny
+
+### 3.4. DAPPER
+Model kontekstowy
+
+### 3.5. MUMR
+Model kontekstowy
