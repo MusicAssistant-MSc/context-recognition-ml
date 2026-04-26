@@ -12,7 +12,7 @@ https://archive.ics.uci.edu/ml/datasets/pamap2+physical+activity+monitoring
 ### 1.2. PMEmo
 **Źródło:** przegląd literatury
 
-Zbiór danych zawierający 794 popularne utwory muzyczne w formacie MP3 z adnotacjami emocji Arousal i Valence dla fragmentów refrenów. Zbiór zawiera dodatkowo sygnały fizjologiczne w postaci aktywności elektrodermalnej (EDA, GSR) oraz HR zebrane od 10 słuchaczy dla każdego utworu.
+Zbiór danych zawierający 794 popularne utwory muzyczne w formacie MP3 z adnotacjami emocji Arousal i Valence dla fragmentów refrenów. Zbiór zawiera dodatkowo sygnały fizjologiczne w postaci aktywności elektrodermalnej (EDA, GSR) zebrane od 10 słuchaczy dla każdego utworu.
 
 Link:
 https://github.com/wangshuo/PMEmo
@@ -20,7 +20,7 @@ https://github.com/wangshuo/PMEmo
 ### 1.3. MUMR
 **Źródło:** przegląd literatury
 
-Dataset utworzony w ramach publikacji, eksperyment przeprowadzony na 30 użytkownikach i na podzbiorze Million Song Dataset oraz Taste Profile Dataset. Zbierane były odtwarzane utwory przez danego użytkownika, jego explicit ratingi VA, czas, pogoda, GPS, HR, kroki i rodzaj aktywności.
+Dataset utworzony w ramach publikacji, eksperyment przeprowadzony na 30 użytkownikach i na podzbiorze Million Song Dataset oraz Taste Profile Dataset. Zbierane były odtwarzane utwory przez danego użytkownika, jego explicit ratingi rekomendacji oraz VA przed/po odsłuchaniu utworu, czas, pogoda, GPS, HR, kroki i rodzaj aktywności.
 
 Źródło:
 https://github.com/JiayuLi-997/MUMR-Ubiquitous_Recommendation
@@ -87,6 +87,9 @@ Eksperyment (odtwarzanie wideo) na 58 uczestnikach, zbierane VA, zaangażowanie 
 
 Link:
 http://mhug.disi.unitn.it/wp-content/ASCERTAIN/ascertain.html
+
+Alternatywny link:
+https://ascertain-dataset.github.io/
 
 ### 1.11. DAPPER
 **Źródło:** dodatkowy research
@@ -234,18 +237,103 @@ https://developer.spotify.com/documentation/web-api
 InCarMusic, GTZAN, Music4All, MTurk, MER60, MediaEval Emotion, AMG240, EMOTIONS, EMOPIA
 
 
-## 3. Zbiory wybrane do dalszej analizy
-### 3.1. WISDM
-Model ruchowy
+## 3. Analiza zbiorów pod kątem kompletności
+W tej sekcji przeprowadzono ponowną analizę wybranych zbiorów danych opisanych w sekcjach 1 i 2. Oceniano datasety pod kątem zawartości danych i ich kompletności dla całego planowanego pipeline'u projektu. Innymi słowy, sprawdzano czy dataset jest typu *all-in-one*, od danych biometrycznych i kontekstowych do utworów muzycznych i ich rekomendacji/ewaluacji przez użytkowników.
 
-### 3.2. PAMAP2
-[Opcjonalnie] Model ruchowy
+Kryteria:
+ - **Dane biometryczne** [KLUCZOWE]. Obecność odczytów z sensorów biometrycznych, preferowalnie z urządzenia noszonego *na nadgarstku*. Obowiązkowo powinny być dostępne dane z czujników tętna (HR/HRV/BVP z PPG lub inne pozwalające na odczyt informacji o tętnie lub powiązanych z tętnem) ze względu na własne możliwości sprzętowe. Inne typy danych biometrycznych są mile widziane.
+ - **Dane ruchowe** [BARDZO POŻĄDANE]. Obecność danych z sensorów IMU (w szczególności z akcelerometru lub żyroskopu). Metoda zbierania dowolna.
+ - **Dane kontekstowe** [POŻĄDANE]. Obecność danych kontekstowych, jak lokalizacja, pogoda, timestamp, szeroko pojęty kontekst użytkownika (np. rodzaj aktywności). Metoda zbierania dowolna.
+ - **Dane muzyczne** [KLUCZOWE]. Obecność utworów muzycznych (w formie plików lub metadanych umożliwiających identyfikację utworu), dane dotyczące tzw. *audio features* utworów czy związane z MER.
+ - **Rekomendacje i/lub oceny użytkowników** [KLUCZOWE]. Powiązanie wszystkich danych w ramach rekomendacji utworu (w formie odsłuchu konkretnego utworu w konkretnym momencie). Preferowane są również dołączone oceny rekomendacji utworów przez użytkowników i/lub określenie ich stanu emocjonalnego w momencie odsłuchu.
+ - **Powiązanie danych** [KLUCZOWE]. W ramach "*eventu odsłuchu*" piosenki lub rekomendacji powinno być możliwe powiązanie wszystkich powyższych danych (poprzez `timestamp`, `event_id` lub inne).
+ - **Wolumetria** [POŻĄDANE]. Wolumen danych powinien być na tyle duży, żeby dało się wytrenować na danych skuteczny model ML (architektura nieokreślona). Model powinien być trenowany na danych biometrycznych/ruchowych/kontekstowych. Jako wyjście model powinien zwracać informacje pozwalające jednoznacznie skonstruować rekomendację muzyczną (np. numeryczne audio features, typ muzyki, rekomendację konkretnego utworu, cechy MER utworu, ...).
 
-### 3.3. WESAD
-Model biometryczny
+W ramach "*eventu odsłuchu*" piosenki powinno być możliwe powiązanie wszystkich powyższych danych (poprzez `timestamp` lub `event_id`).
 
-### 3.4. DAPPER
-Model kontekstowy
+Wyniki analizy przedstawiono poniżej.
 
-### 3.5. MUMR
-Model kontekstowy
+
+### MUMR
+Zbiór danych od 30 użytkowników. Zawiera utwory z podzbioru Million Song Dataset oraz Taste Profile Dataset. Zbierane były odtwarzane utwory przez danego użytkownika, jego explicit ratingi rekomendacji oraz VA przed/po odsłuchaniu utworu, czas, pogoda, GPS, HR, kroki i rodzaj aktywności. Wszystkie dane można powiązać poprzez `interaction_id`.
+
+
+### SiTunes
+Ten sam autor co zbiór MUMR. Struktura i zawartość bardzo podobna..., jest szansa że te zbiory pochodzą z tego samego badania. Różnice: 
+ - granulacja danych biometrycznych w plikach `wrist.npy` (w MUMR zagregowany odczyt dla każdej interakcji, w SiTunes macierz 30x4)
+ - metodologia badania (w MUMR pojedyncze field study, w SiTunes 3-stage study - każdy kolejny stage ma bogatsze etykiety od poprzedniego)
+ - activity type (w SiTunes lepiej opisane, nie wiadomo czy różnica w wartościach)
+
+
+### HKU956
+Bardzo szerokie dane bio: HR, GSR, BVP, IBI (z tego można wyliczyć HRV), temp skóry. Brak danych ruchowych czy kontekstowych. Zbiór zawiera 592 pliki muzyczne których użyto jako stymulacja w eksperymencie. Etykiety obejmują VA w skali [-10,10]. Dodatkowo zebrano dane o cechach charakteru uczestników poprzez test TIPI. Eksperyment obejmował 30 uczestników i 956 rekordów odsłuchu.
+
+**Problem**: brak danych ruchowych lub kontekstowych, eksperyment "stacjonarny".
+
+
+### PAMAP2
+Zbiór zawiera odczyty biometryczne HR oraz ruchowe IMU oraz jako etykiety 18 rodzajów aktywności fizycznej. 
+
+**Problem**: brak informacji o odtwarzanej muzyce, rekomendacjach muzyki czy ocenie utworów muzycznych w rejestrowanym kontekście.
+
+
+### PMEmo
+Zbiór zawiera odczyty biometryczne EDA (GSR). Dostępne są informacje o utworach oraz ich metadane, a także manualne etykiety VA, pozwalające na badania nad MER (brak sprecyzowania, czy etykiety VA dotyczą MER, czy są to emocje uczestników eksperymentu odczuwane podczas słuchania muzyki). 
+
+**Problem**: brak sygnałów biometrycznych HR, brak informacji o tym, jakie jest powiązanie danych muzycznych z danymi bio.
+
+
+### WISDM
+Zbiór danych od 51 uczestników korzystających ze smartfona i smartwatcha. Zawiera dane z akcelerometru i żyroskopu dla 18 różnych aktywności dnia codziennego. Dataset typowo do rozpoznawania aktywności fizycznej.
+
+**Problem**: brak danych biometrycznych, brak danych muzycznych oraz ich rekomendacji.
+
+
+### WESAD
+Zbiór danych od 15 uczestników, eksperyment opierał się na odtwarzaniu wideo o różnym poziomie stresu. Zebrano tętno, ECG, EDA, EMG, temperaturę skóry i dane z akcelerometru (urządzenie Empatica E4 - nadgarstek, oraz RespiBAN - klatka piersiowa). Odczytom przypisano etykiety z poziomem stresu/podekscytowania oraz VA.
+
+**Problem**: brak danych muzycznych oraz ich rekomendacji.
+
+
+### DEAP
+120 wycinków utworów (po 60s, linki do utworów). Emocje reprezentowane wymiarowo (AV, upodobanie, znajomość utworu). Dołączone odczyty biometryczne od 32 uczestników: EEG, ECG, BVP (Blood Volume Pulse, mierzony sensorem PPG), EMG (aktywność elektryczna mięści), EDA (GSR). Wszystkie odczyty mierzone z częstotliwością 512 Hz.
+
+**Problem**: brak dostępu do zbioru (http response 503 na oryginalnym linku). Dostępna tylko wersja okrojona z samym EEG na Kaggle/poprzez bibliotekę pythona `torchegg`.
+
+
+### DECAF
+Zbiór posiada biometrię (MEG, NIR, hEOG, tEMG) oraz ECG - ale ECG zebrano poprzez elektrody na klatce piersiowej, nie urządzenie wearable. Brak danych ruchowych i kontekstowych. Dobrze zdefiniowana muzyka i samoocena podczas badania (VA i dominance). Dane są powiązane, eksperyment na 30 uczestnikach, którzy słuchali po 40 utworów muzycznych. DECAF bazuje na DEAP (w kwestii utworów).
+
+**Problem**: zbiór dostępny tylko po uzyskaniu zgody autorów, możliwy do wykorzystania wyłącznie ECG, dane biometryczne nie zebrane przez urządzenie na nadgarstku, brak danych ruchowych i kontekstowych.
+
+
+### MANHOB-HCI
+Zbierane multimodalne dane: EEG, Face, Body video, ECG, GSR, Resp, temp. Do tego oceny użytkowników (VA, dominance, predictability, skala 1-9).
+
+**Problem**: stymulacja za pomocą wideo i obrazów, brak muzyki.
+
+
+### ECSMP
+Bardzo dobre badania EEG, ECG, PPG, GSR, temp. Są dane z akcelerometru i kontekst (wykonywane zadanie).
+
+**Problem**: brak powiązania z muzyką i rekomendacją.
+
+
+### EmoWear
+Dokładne dane bio: ECG, BVP, EDA, RSP, SKT. Są dane ruchowe: acc i gyro. Kontekst określony jako etykieta wykonywanej aktywności. 
+
+**Problem**: stymulacja za pomocą klipów wideo.
+
+
+### HR_act_incr_to_music
+**Pełna nazwa**: Heart rate and insula activity increase in response to music in individuals with high interoceptive sensitivity
+
+Zbiór zawiera dane biometryczne w postaci surowego sygnału PPG oraz dane RRI (odstępy między uderzeniami serca). Stymulacja za pomocą sesji muzycznych, w trakcie których puszczano utwory o konkretnym "typie". Oceny użytkowników zapisane w formie `valence_rating`.
+
+**Problem**: brak danych ruchowych i kontekstowych, powiązanie odczytów biometrycznych z muzyką wyłącznie za pomocą typu muzyki (zmienna kategoryczna, 3 możliwe wartości) dla danej sesji (czyli brak informacji o konkretnych utworach), brak oceny arousal ani innej ewaluacji rekomendacji (sesji).
+
+
+### Physiological Reactions to Music Stimuli Dataset (Kaggle)
+Szerokie dane bio: EEG, BVP, EDA, HR i temperatura skóry. Dostępne również dane ruchowe z akcelerometru. Minimalne dane kontekstowe (podział na sesje poranne i wieczorne). Bogate dane muzyczne (audio, spektrogramy, MFCC i gatunki muzyczne). 
+
+**Problem**: brak powiązania danych muzycznych z danymi biometrycznymi/ruchowymi/kontekstowymi (dane bio/ruch/kontekst podzielone na sesje, brak info o tym jakie uwtory i kiedy puszczano w trakcie sesji), brak dobrej ewaluacji/oceny rekomendacji - wyłącznie "mental fatigue scores", brak VA lub oceny utworów
