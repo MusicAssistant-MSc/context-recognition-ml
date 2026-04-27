@@ -56,6 +56,9 @@ https://www.kaggle.com/datasets/orvile/wesad-wearable-stress-affect-detection-da
 Link:
 https://www.eecs.qmul.ac.uk/mmv/datasets/deap
 
+Alternatywny link (docs):
+https://github.com/openmedlab/Awesome-Medical-Dataset/blob/main/resources/DEAP.md
+
 ### 1.7. SBRHAPTDS
 **Źródło:** przegląd literatury
 
