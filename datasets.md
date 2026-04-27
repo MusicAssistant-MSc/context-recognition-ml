@@ -115,6 +115,43 @@ Eksperyment przeprowadzony na 49 uczestnikach. Zbierano VA i upodobanie podczas 
 Link:
 https://zenodo.org/records/10407279
 
+### 1.14. SiTunes
+**Źródło:** dodatkowy research
+
+Dataset utworzony w ramach publikacji, eksperyment przeprowadzony na 30 użytkownikach w ramach 3 tur. Każda tura charakteryzuje się bogatszym zbiorem etykiet od poprzedniej. Zbierane były odtwarzane utwory przez danego użytkownika, jego explicit ratingi rekomendacji oraz VA przed/po odsłuchaniu utworu, czas, pogoda, GPS, HR (w formie macierzy 30x4), kroki i rodzaj aktywności. Zbiór tego samego autora co MUMR, o zbliżonej strukturze i zawartości danych.
+
+Źródło:
+https://github.com/JiayuLi-997/SiTunes_dataset
+
+### 1.15. HKU956
+Dataset utworzony w ramach eskperymentu, który obejmował 30 uczestników i 956 rekordów odsłuchu. Zebrano multimodalne dane biometryczne: HR, GSR, BVP, IBI oraz temperaturę skóry. Zbiór zawiera 592 pliki muzyczne których użyto jako stymulacja w eksperymencie. Etykiety obejmują emocje zaznaczane przez uczestników w wymiarach VA w skali [-10,10]. Dodatkowo zebrano dane o cechach charakteru uczestników poprzez test TIPI.
+
+Źródło:
+https://datahub.hku.hk/articles/dataset/HKU956_Dataset_in_Detecting_Music-Induced_Emotion_Based_on_Acoustic_Analysis_and_Physiological_Sensing_A_Multimodal_Approach_/21080821?file=38149263
+
+### 1.16. BIRAFFE i BIRAFFE2
+Datasety utworzone w ramach eskperymentów. Stymulacja obejmowała obrazy ze zbioru IAPS oraz dźwięki ze zbioru IADS (nie utwory muzyczne, lecz zbiór "naturalnych" dźwięków mających wywoływać emocje). W drugiej części eskperymentu stymulacją były proste gry komputerowe. Podczas obydwu części zebrano multimodalne dane biometryczne: ECG, GSR i wyraz twarzy. W BIRAFFE2 zbierano również ruchy dłoni dzięki analizie akcelerometru i żyroskopu w padzie do gier. W BIRAFFE2 oprócz danych biometrycznych zebrano również feedback od uczestników w postaci wymiarów VA, testu osobowości "Big Five" oraz przez kwestionariusz (GEQ) dotyczący zaangażowania w rozgrywkę.
+
+Źródło (BIRAFFE):
+https://ruj.uj.edu.pl/entities/publication/33526000-2eda-48b2-b203-e780a11196dd
+
+Źródło (BIRAFFE2):
+https://zenodo.org/records/5786104?preview_file=BIRAFFE2-arxiv-HAIW2020-paper.pdf
+
+### 1.17. HR_act_incr_to_music
+**Pełna nazwa**: Heart rate and insula activity increase in response to music in individuals with high interoceptive sensitivity
+
+Zbiór zawiera dane biometryczne w postaci surowego sygnału PPG oraz dane RRI (odstępy między uderzeniami serca). Stymulacja obejmowała sesje muzyczne, w trakcie których puszczano utwory o konkretnym "typie". Oceny użytkowników zostały zapisane w formie ratingu *valence*.
+
+Źródło:
+https://figshare.com/articles/dataset/Heart_rate_and_insula_activity_increase_in_response_to_music_in_individuals_with_high_interoceptive_sensitivity/24874173
+
+### 1.18. Physiological Reactions to Music Stimuli Dataset (Kaggle)
+Zbiór danych utworzony w ramach eksperymentu obejmującego 23 uczestników. Stymulacją były fragmenty utworów odtwarzane w ramach sesji. Zebrano multimodalne dane biometryczne: EEG, BVP, EDA, HR i temperaturę skóry. Zebrano również dane ruchowe z akcelerometru. Sesje podzielone są na poranne i wieczorne. Do odczytów dołączono bogate dane muzyczne, z których korzystano do stymulacji (pliki audio, spektrogramy, MFCC i gatunki muzyczne). Brak bezpośredniego powiązania sesji (podczas których zbierano dane biometryczne) z odtwarzanymi utworami.
+
+Źródło:
+https://www.kaggle.com/datasets/zoya77/physiological-reactions-to-music-stimuli-dataset/data
+
 ### Inne datasety
 **Źródło:** przegląd literatury
 
@@ -122,7 +159,7 @@ FER2013, AffectNet, Sentiment140
 
 **Źródło:** dodatkowy research
 
-BIRAFFE, CASE, SWELL-KW, MPED
+CASE, SWELL-KW, MPED
 
 
 ## 2. Zbiory utworów muzycznych lub MER
@@ -247,7 +284,7 @@ Kryteria:
  - **Dane muzyczne** [KLUCZOWE]. Obecność utworów muzycznych (w formie plików lub metadanych umożliwiających identyfikację utworu), dane dotyczące tzw. *audio features* utworów czy związane z MER.
  - **Rekomendacje i/lub oceny użytkowników** [KLUCZOWE]. Powiązanie wszystkich danych w ramach rekomendacji utworu (w formie odsłuchu konkretnego utworu w konkretnym momencie). Preferowane są również dołączone oceny rekomendacji utworów przez użytkowników i/lub określenie ich stanu emocjonalnego w momencie odsłuchu.
  - **Powiązanie danych** [KLUCZOWE]. W ramach "*eventu odsłuchu*" piosenki lub rekomendacji powinno być możliwe powiązanie wszystkich powyższych danych (poprzez `timestamp`, `event_id` lub inne).
- - **Wolumetria** [POŻĄDANE]. Wolumen danych powinien być na tyle duży, żeby dało się wytrenować na danych skuteczny model ML (architektura nieokreślona). Model powinien być trenowany na danych biometrycznych/ruchowych/kontekstowych. Jako wyjście model powinien zwracać informacje pozwalające jednoznacznie skonstruować rekomendację muzyczną (np. numeryczne audio features, typ muzyki, rekomendację konkretnego utworu, cechy MER utworu, ...).
+ - **Wolumetria** [POŻĄDANE]. Wolumen danych powinien być na tyle duży, żeby dało się wytrenować na nich skuteczny model ML (architektura nieokreślona). Model powinien być trenowany na danych biometrycznych/ruchowych/kontekstowych. Jako wyjście model powinien zwracać informacje pozwalające jednoznacznie skonstruować rekomendację muzyczną (np. numeryczne audio features, typ muzyki, rekomendację konkretnego utworu, cechy MER utworu, ...).
 
 W ramach "*eventu odsłuchu*" piosenki powinno być możliwe powiązanie wszystkich powyższych danych (poprzez `timestamp` lub `event_id`).
 
