@@ -1,0 +1,9 @@
+# Ignore data directories contents
+data/raw/*
+data/processed/*
+data/interim/*
+
+# Don't ignore empty data directories
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/interim/.gitkeep
