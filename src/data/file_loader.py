@@ -64,3 +64,5 @@ def load_csv_data(
     return pd.read_csv(path, sep=sep, encoding=encoding, index_col=index_col)
 
 
+if __name__ == "__main__":
+    pass
