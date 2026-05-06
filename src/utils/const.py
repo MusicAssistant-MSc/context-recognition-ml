@@ -10,6 +10,7 @@ PROCESSED_DATA_DIR = DATA_DIR / 'processed'
 SITUNES_DATA_DIR = RAW_DATA_DIR / 'SiTunes'
 
 SITUNES_MUSIC_METADATA_DIR = [SITUNES_DATA_DIR / 'music_metadata']
+SITUNES_MUSIC_METADATA_FILENAMES = ['music_info.csv', 'music_info_withname.csv']
 
 SITUNES_STAGES = ['Stage2', 'Stage3']
 SITUNES_STAGE_FILES = {

@@ -4,18 +4,19 @@ from typing import Any
 
 from data import file_loader
 from src.utils import const
+from src.utils.data_utils import check_column_uniqueness, get_shared_columns
 
 def load_music_metadata() -> dict[str, pd.DataFrame]:
     """
     Load the music metadata from the SiTunes dataset.
 
     Returns:
-        dict[str, pd.DataFrame]: Mapping of music metadata CSV file names to loaded data.
+        dict[str, pd.DataFrame]: Mapping of music metadata CSV filenames to loaded data.
     """
     music_metadata_files = {}
 
     for file in const.SITUNES_MUSIC_METADATA_DIR.glob('*.csv'):
-        if file.is_file():
+        if file.is_file() and file.name in const.SITUNES_MUSIC_METADATA_FILENAMES:
             music_metadata_files[file.stem] = file_loader.load_csv_data(file)
     
     return music_metadata_files
@@ -42,3 +43,25 @@ def load_stage_data(stage: str) -> dict[str, Any]:
     return loaded_data
 
 
+def merge_music_metadata(music_dfs: dict[str, pd.DataFrame]) -> pd.DataFrame:
+    """Merge the music metadata DataFrames on shared columns.
+
+    Args:
+        music_dfs (dict[str, pd.DataFrame]): A dictionary of music metadata DataFrames.
+
+    Returns:
+        pd.DataFrame: The merged music metadata DataFrame.
+    """
+    merged_df = None
+
+    for name, df in music_dfs.items():
+        if merged_df is None:
+            merged_df = df
+        else:
+            fingerprint_cols = get_shared_columns(merged_df, df)
+            fignerprint_cols_uniqueness = check_column_uniqueness(df, fingerprint_cols)
+
+            if fignerprint_cols_uniqueness['is_unique']:
+                merged_df = pd.merge(left=merged_df, right=df, on=fingerprint_cols, how='left', suffixes=('', f'_{name}'))
+    
+    return merged_df
