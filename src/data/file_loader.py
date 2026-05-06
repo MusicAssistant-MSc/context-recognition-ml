@@ -2,9 +2,9 @@ import json
 from pathlib import Path
 import numpy as np
 import pandas as pd
-from typing import Dict, Any, Optional
+from typing import Any
 
-def load_json_data(file_path: str | Path, encoding: str = 'utf-8') -> Dict[str, Any]:
+def load_json_data(file_path: str | Path, encoding: str = 'utf-8') -> dict[str, Any]:
     """Load a JSON file into a Python dictionary.
 
     Args:
@@ -12,7 +12,7 @@ def load_json_data(file_path: str | Path, encoding: str = 'utf-8') -> Dict[str, 
         encoding (str): The encoding of the JSON file.
 
     Returns:
-        Dict[str, Any]: The loaded data as a dictionary.
+        dict[str, Any]: The loaded data as a dictionary.
     """
     path = Path(file_path)
     if not path.is_file():
@@ -22,7 +22,7 @@ def load_json_data(file_path: str | Path, encoding: str = 'utf-8') -> Dict[str, 
         return json.load(f)
 
 
-def load_npy_data(file_path: str | Path, allow_pickle_load: bool = False, nmap_mode: Optional[str] = None) -> np.ndarray:
+def load_npy_data(file_path: str | Path, allow_pickle_load: bool = False, nmap_mode: str | None = None) -> np.ndarray:
     """Load a NumPy binary file (.npy).
 
     Args:
@@ -43,16 +43,16 @@ def load_npy_data(file_path: str | Path, allow_pickle_load: bool = False, nmap_m
 def load_csv_data(
     file_path: str | Path, 
     sep: str = ',', 
-    encoding: Optional[str] = None, 
-    index_col: Optional[int | str] = None
+    encoding: str | None = None, 
+    index_col: str | int | None = None
 ) -> pd.DataFrame:
     """Load a CSV file into a Pandas DataFrame.
 
     Args:
         file_path (str | Path): The path to the CSV file.
         sep (str): The delimiter used in the CSV file.
-        encoding (Optional[str]): The encoding of the CSV file.
-        index_col (Optional[int | str]): The column to use as the row index.
+        encoding (str | None): The encoding of the CSV file.
+        index_col (str | int | None): The column to use as the row index.
 
     Returns:
         pd.DataFrame: A pandas DataFrame containing the data.
