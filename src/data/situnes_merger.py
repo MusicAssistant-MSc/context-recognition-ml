@@ -13,10 +13,11 @@ def load_music_metadata() -> dict[str, pd.DataFrame]:
     Returns:
         dict[str, pd.DataFrame]: Mapping of music metadata CSV filenames to loaded data.
     """
+    music_metadata_filenames = [file_cfg['filename'] for file_cfg in const.SITUNES_MUSIC_METADATA_CONFIG.values()]
     music_metadata_files = {}
 
     for file in const.SITUNES_MUSIC_METADATA_DIR.glob('*.csv'):
-        if file.is_file() and file.name in const.SITUNES_MUSIC_METADATA_FILENAMES:
+        if file.is_file() and file.name in music_metadata_filenames:
             music_metadata_files[file.stem] = file_loader.load_csv_data(file)
     
     return music_metadata_files
@@ -35,10 +36,22 @@ def load_stage_data(stage: str) -> dict[str, Any]:
         raise FileNotFoundError(f"SiTunes stage directory not found: {stage_dir}")
     
     loaded_data = {}
+
     # Load environment, interactions, and wrist data for the specified stage
-    loaded_data['environment'] = file_loader.load_json_data(stage_dir / const.SITUNES_STAGE_FILES['environment'])
-    loaded_data['interactions'] = file_loader.load_csv_data(stage_dir / const.SITUNES_STAGE_FILES['interactions'])
-    loaded_data['wrist'] = file_loader.load_npy_data(stage_dir / const.SITUNES_STAGE_FILES['wrist'])
+    for key, filename in const.SITUNES_STAGE_FILES.items():
+        file_path = stage_dir / filename
+        if not file_path.is_file():
+            raise FileNotFoundError(f"Expected file '{filename}' not found in stage directory: {stage_dir}")
+        
+        match file_path.suffix:
+            case '.json':
+                loaded_data[key] = file_loader.load_json_data(file_path)
+            case '.csv':
+                loaded_data[key] = file_loader.load_csv_data(file_path)
+            case '.npy':
+                loaded_data[key] = file_loader.load_npy_data(file_path)
+            case _:
+                pass  # Unsupported file type, add logging if needed
 
     return loaded_data
 
