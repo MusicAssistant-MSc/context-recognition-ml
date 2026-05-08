@@ -7,3 +7,6 @@ data/interim/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/interim/.gitkeep
+
+# Ignore __pycache__ directories
+__pycache__/
