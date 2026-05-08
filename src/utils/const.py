@@ -1,6 +1,6 @@
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parent[2]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = PROJECT_ROOT / 'data'
 RAW_DATA_DIR = DATA_DIR / 'raw'
 INTERIM_DATA_DIR = DATA_DIR / 'interim'
@@ -10,6 +10,8 @@ PANDAS_DF_UNNAMED_COL_PREFIX = 'Unnamed: '
 
 # --- SiTunes dataset constants ---
 SITUNES_DATA_DIR = RAW_DATA_DIR / 'SiTunes'
+SITUNES_REDUNDANT_COL_SUFFIX = '_redundant'
+SITUNES_FLOAT_ROUNDING_PRECISION = 6
 
 SITUNES_MUSIC_METADATA_DIR = SITUNES_DATA_DIR / 'music_metadata'
 SITUNES_MUSIC_METADATA_CONFIG = {
