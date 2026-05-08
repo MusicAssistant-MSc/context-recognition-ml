@@ -1,6 +1,8 @@
 import pandas as pd
 from typing import Any
 
+from utils import const
+
 def check_column_uniqueness(df: pd.DataFrame, columns: list[str]) -> dict[str, Any]:
     """Check if a specific column or set of columns can serve as a unique key.
 
@@ -40,3 +42,88 @@ def get_shared_columns(df1: pd.DataFrame, df2: pd.DataFrame) -> list[str]:
         List[str]: A list of column names that are present in both DataFrames.
     """
     return list(set(df1.columns).intersection(set(df2.columns)))
+
+
+def drop_df_columns(
+    df: pd.DataFrame, 
+    columns_to_drop: list[str], 
+    drop_unnamed: bool = False, 
+    unnamed_cols_prefix: str = const.PANDAS_DF_UNNAMED_COL_PREFIX
+) -> pd.DataFrame:
+    """Drop specific columns from df and unnamed ones.
+
+    Args:
+        df (pd.DataFrame): The DataFrame from which to drop unnamed columns.
+        columns_to_drop (list[str]): A list of column names to drop.
+        drop_unnamed (bool): Whether to drop unnamed columns.
+        unnamed_cols_prefix (str): The prefix of unnamed columns.
+
+    Returns:
+        pd.DataFrame: A new DataFrame with unnamed columns removed.
+    """
+    unnamed_cols = [col for col in df.columns if col.startswith(unnamed_cols_prefix) or col == ""]
+    columns_to_drop = list(set(columns_to_drop + unnamed_cols)) if drop_unnamed else columns_to_drop
+    return df.drop(columns=columns_to_drop)
+
+
+def verify_series_identity(series1: pd.Series, series2: pd.Series) -> bool:
+    """Verify if two pandas Series are identical in terms of index and values.
+
+    Args:
+        series1 (pd.Series): The first Series to compare.
+        series2 (pd.Series): The second Series to compare.
+
+    Returns:
+        bool: True if the Series are identical, False otherwise.
+    """
+    if len(series1) != len(series2):
+        return False
+    return series1.equals(series2)
+
+
+def consolidate_column_pair(
+    df: pd.DataFrame, 
+    original_col: str, 
+    redundant_col: str
+) -> pd.DataFrame:
+    """Consolidate two columns by filling missing values in target from source.
+
+    Args:
+        df (pd.DataFrame): The DataFrame to process.
+        original_col (str): The column to be updated with missing values from the redundant column.
+        redundant_col (str): The redundant column providing values to original_col and to be dropped.
+
+    Returns:
+        pd.DataFrame: DataFrame with consolidated columns.
+    """
+    if original_col not in df.columns or redundant_col not in df.columns:
+        return df
+
+    if original_col == redundant_col:
+        return df
+
+    df = df.copy()
+    # Fill nulls in original_col with values from redundant_col
+    df[original_col] = df[original_col].combine_first(df[redundant_col])
+
+    return df.drop(columns=[redundant_col])
+
+
+def consolidate_redundant_columns(df: pd.DataFrame, redundant_col_suffix: str) -> pd.DataFrame:
+    """Find and consolidate all columns ending with a specific suffix.
+
+    Args:
+        df (pd.DataFrame): The DataFrame after a merge operation.
+        redundant_col_suffix (str): The suffix identifying redundant columns (e.g., '_redundant').
+
+    Returns:
+        pd.DataFrame: DataFrame with all redundant columns consolidated.
+    """
+    redundant_cols = [col for col in df.columns if col.endswith(redundant_col_suffix)]
+    current_df = df.copy()
+
+    for redundant_col in redundant_cols:
+        original_col = redundant_col.replace(redundant_col_suffix, "")
+        current_df = consolidate_column_pair(current_df, original_col, redundant_col)
+        
+    return current_df
