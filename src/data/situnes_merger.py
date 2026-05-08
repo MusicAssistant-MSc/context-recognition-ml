@@ -70,11 +70,11 @@ def _clean_music_metadata_df(df: pd.DataFrame, config: dict) -> pd.DataFrame:
     drop_cols = config.get('drop_cols', [])
     drop_unnamed_cols = config.get('drop_unnamed_cols', False)
 
-    return drop_df_columns(
-        df=df, 
-        columns_to_drop=drop_cols, 
-        drop_unnamed=drop_unnamed_cols
-    )
+    df = df.copy()
+    df = drop_df_columns(df=df, columns_to_drop=drop_cols, drop_unnamed=drop_unnamed_cols)
+    df = round_numeric_columns(df, precision=const.SITUNES_FLOAT_ROUNDING_PRECISION)
+
+    return df
 
 
 def _consolidate_music_metadata_id_cols(df: pd.DataFrame, primary_id_col: str, secondary_id_col: str) -> pd.DataFrame:

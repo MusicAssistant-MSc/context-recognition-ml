@@ -127,3 +127,25 @@ def consolidate_redundant_columns(df: pd.DataFrame, redundant_col_suffix: str) -
         current_df = consolidate_column_pair(current_df, original_col, redundant_col)
         
     return current_df
+
+
+def round_numeric_columns(df: pd.DataFrame, precision: int, columns: list[str] | None = None) -> pd.DataFrame:
+    """Round numeric columns in a DataFrame to a specified number of decimal places.
+
+    Args:
+        df (pd.DataFrame): The DataFrame to process.
+        precision (int): The number of decimal places to round to.
+        columns (list[str] | None): A list of column names to round. If None, all numeric columns will be rounded.
+
+    Returns:
+        pd.DataFrame: A new DataFrame with rounded numeric columns.
+    """
+    if columns is None:
+        columns = df.select_dtypes(include=['number', 'float32', 'float64']).columns.tolist()
+    
+    df = df.copy()
+    for col in columns:
+        if col in df.columns and pd.api.types.is_numeric_dtype(df[col]):
+            df[col] = df[col].round(precision)
+    
+    return df
