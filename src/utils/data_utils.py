@@ -104,7 +104,7 @@ def consolidate_column_pair(
 
     df = df.copy()
     # Fill nulls in original_col with values from redundant_col
-    df[original_col] = df[original_col].combine_first(df[redundant_col])
+    df[original_col] = df[original_col].fillna(df[redundant_col])
 
     return df.drop(columns=[redundant_col])
 
