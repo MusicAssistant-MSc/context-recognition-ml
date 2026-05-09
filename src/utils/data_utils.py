@@ -1,7 +1,7 @@
 import pandas as pd
 from typing import Any
 
-from utils import const
+from src.utils import const
 
 def check_column_uniqueness(df: pd.DataFrame, columns: list[str]) -> dict[str, Any]:
     """Check if a specific column or set of columns can serve as a unique key.

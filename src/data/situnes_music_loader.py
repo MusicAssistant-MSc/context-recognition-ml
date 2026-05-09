@@ -2,9 +2,9 @@ import pandas as pd
 import numpy as np
 from typing import Any
 
-from data import file_loader
-from utils import const
-from utils.data_utils import *
+from src.data import file_loader
+from src.utils import const
+from src.utils.data_utils import *
 
 def load_music_metadata() -> dict[str, pd.DataFrame]:
     """
