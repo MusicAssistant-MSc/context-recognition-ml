@@ -32,9 +32,31 @@ SITUNES_MUSIC_METADATA_CONFIG = {
 }
 
 SITUNES_STAGES = ['Stage2', 'Stage3']
-SITUNES_STAGE_FILES = {
-    'environment': 'env.json', 
-    'interactions': 'interactions.csv', 
-    'wrist': 'wrist.npy',
+SITUNES_STAGE_DATA_CONFIG = {
+    'environment': {
+        'filename': 'env.json',
+        'pkey_col': 'inter_id',
+        'cols': {
+            'time': ['time_period'],
+            'weather': ['weather_type', 'pressure', 'temperature', 'humidity'],
+            'GPS': ['longitude', 'latitude', 'speed']
+        },
+        'rename_cols': {
+            'pressure': 'weather_pressure',
+            'temperature': 'weather_temp',
+            'humidity': 'weather_humidity',
+            'longitude': 'gps_lon',
+            'latitude': 'gps_lat',
+            'speed': 'gps_speed'
+        },
+        'drop_cols': [],
+    },
+    'interactions': {
+        'filename': 'interactions.csv',
+        'pkey_col': 'inter_id'
+    },
+    'wrist': {
+        'filename': 'wrist.npy'
+    },
 }
 

@@ -149,3 +149,16 @@ def round_numeric_columns(df: pd.DataFrame, precision: int, columns: list[str] |
             df[col] = df[col].round(precision)
     
     return df
+
+
+def rename_columns(df: pd.DataFrame, column_mapping: dict[str, str]) -> pd.DataFrame:
+    """Rename columns in a DataFrame based on a provided mapping.
+
+    Args:
+        df (pd.DataFrame): The DataFrame to process.
+        column_mapping (dict[str, str]): A dictionary mapping old column names to new column names.
+
+    Returns:
+        pd.DataFrame: A new DataFrame with renamed columns.
+    """
+    return df.rename(columns=column_mapping)
