@@ -34,6 +34,7 @@ class SitunesEnvironmentDataKeys:
     GPS: str = 'GPS'
 
 SITUNES_MUSIC_METADATA_DIR = SITUNES_DATA_DIR / 'music_metadata'
+SITUNES_MERGED_MUSIC_METADATA_FILENAME = 'merged_music_metadata.csv'
 SITUNES_MUSIC_METADATA_MERGE_TYPE = 'outer'
 SITUNES_MUSIC_METADATA_CONFIG = {
     'music_info': {
@@ -53,6 +54,8 @@ SITUNES_MUSIC_METADATA_CONFIG = {
 }
 
 SITUNES_STAGES = ['Stage2', 'Stage3']
+SITUNES_MERGED_INTER_ENV_DATA_FILENAME = 'merged_inter_env_data.csv'
+SITUNES_MERGED_WRIST_DATA_FILENAME = 'merged_wrist_data.npy'
 SITUNES_STAGE_NUM_EXTRACTION_PATTERN = r'Stage(\d+)'
 SITUNES_STAGE_DATA_CONFIG = {
     SitunesStageDataKeys.ENVIRONMENT: {
