@@ -1,6 +1,4 @@
 import pandas as pd
-import numpy as np
-from typing import Any
 
 from src.data import file_loader
 from src.utils import const
@@ -45,9 +43,6 @@ def _clean_music_metadata_df(
     Returns:
         pd.DataFrame: The cleaned music metadata DataFrame.
     """
-    # drop_cols = config.get('drop_cols', [])
-    # drop_unnamed_cols = config.get('drop_unnamed_cols', False)
-
     df = df.copy()
     df = drop_df_columns(df=df, columns_to_drop=drop_cols, drop_unnamed=drop_unnamed_cols)
     df = round_numeric_columns(df, precision=const.SITUNES_FLOAT_ROUNDING_PRECISION)
