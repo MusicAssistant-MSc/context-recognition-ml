@@ -64,5 +64,46 @@ def load_csv_data(
     return pd.read_csv(path, sep=sep, encoding=encoding, index_col=index_col)
 
 
-if __name__ == "__main__":
-    pass
+def save_csv_data(
+    df: pd.DataFrame, 
+    filepath: str | Path, 
+    sep: str = ',', 
+    encoding: str | None = None, 
+    index: bool = False
+) -> None:
+    """Save a Pandas DataFrame to a CSV file.
+
+    Args:
+        df (pd.DataFrame): The DataFrame to save.
+        filepath (str | Path): The path where the CSV file will be saved.
+        sep (str): The delimiter to use in the CSV file.
+        encoding (str | None): The encoding of the CSV file.
+        index (bool): Whether to write row names (index).
+
+    Returns:
+        None
+    """
+    path = Path(filepath)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    df.to_csv(path, sep=sep, encoding=encoding, index=index)    
+
+
+def save_npy_data(
+    array: np.ndarray, 
+    filepath: str | Path, 
+    allow_pickle_save: bool = False
+) -> None:
+    """Save a NumPy array to a binary file (.npy).
+
+    Args:
+        array (np.ndarray): The NumPy array to save.
+        filepath (str | Path): The path where the .npy file will be saved.
+        allow_pickle_save (bool): Whether to allow pickle saving.
+        nmap_mode (Optional[str]): The mode for saving the NumPy array.
+
+    Returns:
+        None
+    """
+    path = Path(filepath)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    np.save(str(path), array, allow_pickle=allow_pickle_save)
