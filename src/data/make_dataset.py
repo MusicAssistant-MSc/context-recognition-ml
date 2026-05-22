@@ -5,7 +5,7 @@ from src.data import file_loader, situnes_music_loader, situnes_stage_loader
 from src.utils import const
 
 
-def main(
+def build_interim_data(
     interim_data_dir: Path = const.INTERIM_DATA_DIR,
     output_music_metadata_filename: str = const.SITUNES_MERGED_MUSIC_METADATA_FILENAME,
     output_inter_env_data_filename: str = const.SITUNES_MERGED_INTER_ENV_DATA_FILENAME,
@@ -58,4 +58,4 @@ def main(
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-    main()
+    build_interim_data()
