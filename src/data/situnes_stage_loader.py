@@ -6,7 +6,7 @@ import numpy as np
 from typing import Any
 
 from src.data import file_loader
-from src.utils import const
+from src.data import const
 
 
 @dataclass
