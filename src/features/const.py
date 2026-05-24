@@ -16,3 +16,13 @@ class BioFeatureNames:
     HR_TREND_SLOPE = 'hr_trend_slope'
     HR_TREND_R_VALUE = 'hr_trend_r_value'
     HR_TREND_STD_ERR = 'hr_trend_std_err'
+
+class MotionFeatureNames:
+    """Names of the extracted motion features."""
+    ACT_INTENSITY_MEAN = 'act_intensity_mean'
+    ACT_INTENSITY_STD = 'act_intensity_std'
+    ACT_INTENSITY_MAX = 'act_intensity_max'
+    ACT_STEPS_MEAN = 'act_steps_mean'
+    ACT_STEPS_ACTIVE_RATIO = 'act_steps_active_ratio'
+    ACT_TYPE_DOMINANT = 'act_type_dominant'
+    ACT_TYPE_CHANGES_COUNT = 'act_type_changes_count'
