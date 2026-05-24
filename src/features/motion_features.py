@@ -11,7 +11,7 @@ class MotionFeatureNamesMapping:
     act_intensity_mean: str
     act_intensity_std: str
     act_intensity_max: str
-    act_steps_mean: str
+    act_steps_sum: str
     act_steps_active_ratio: str
     act_type_dominant: str
     act_type_changes_count: str
@@ -74,7 +74,7 @@ def extract_motion_features(
         act_intensity_mean=const.MotionFeatureNames.ACT_INTENSITY_MEAN,
         act_intensity_std=const.MotionFeatureNames.ACT_INTENSITY_STD,
         act_intensity_max=const.MotionFeatureNames.ACT_INTENSITY_MAX,
-        act_steps_mean=const.MotionFeatureNames.ACT_STEPS_MEAN,
+        act_steps_sum=const.MotionFeatureNames.ACT_STEPS_SUM,
         act_steps_active_ratio=const.MotionFeatureNames.ACT_STEPS_ACTIVE_RATIO,
         act_type_dominant=const.MotionFeatureNames.ACT_TYPE_DOMINANT,
         act_type_changes_count=const.MotionFeatureNames.ACT_TYPE_CHANGES_COUNT
@@ -101,7 +101,7 @@ def extract_motion_features(
         feature_names_mapping.act_intensity_mean: np.mean(act_intensity_matrix, axis=1),
         feature_names_mapping.act_intensity_std: np.std(act_intensity_matrix, axis=1),
         feature_names_mapping.act_intensity_max: np.max(act_intensity_matrix, axis=1),
-        feature_names_mapping.act_steps_mean: np.mean(act_steps_matrix, axis=1),
+        feature_names_mapping.act_steps_sum: np.sum(act_steps_matrix, axis=1),
         feature_names_mapping.act_steps_active_ratio: np.array([
             _calculate_non_zero_values_ratio(inter_matrix) for inter_matrix in act_steps_matrix]),
         feature_names_mapping.act_type_dominant: np.array([
