@@ -1,5 +1,5 @@
 from src.utils.const import SiTunesInterimWristColsIdx as WristSignalsIdx
-
+from src.utils.const import SiTunesInterimInterEnvCols
 class BioFeatureNames:
     """Names of the extracted biological features."""
     HR_MEAN = 'hr_mean'
@@ -20,3 +20,11 @@ class MotionFeatureNames:
     ACT_TYPE_DOMINANT = 'act_type_dominant'
     ACT_TYPE_CHANGES_COUNT = 'act_type_changes_count'
 
+class ContextFeatureNames:
+    """Names of the extracted context features."""
+    TIME_PERIOD = 'context_time_period'
+    WEATHER_TYPE = 'context_weather_type'
+    WEATHER_PRESSURE = 'context_weather_pressure'
+    WEATHER_TEMP: str = 'context_weather_temp'
+    WEATHER_HUMIDITY: str = 'context_weather_humidity'
+    GPS_SPEED: str = 'context_gps_speed'
