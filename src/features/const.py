@@ -50,3 +50,8 @@ class MusicFeatureNames:
     RMS_ENERGY_STD: str = "music_rms_std"
     ZCR_MEAN: str = "music_zcr_mean"
     PSY_SHARPNESS_MEAN: str = "music_psy_sharpness_mean"
+
+class EmotionFeatureNames:
+    """Names of the extracted emotion features."""
+    EMO_PRE_VALENCE: str = 'emo_pre_valence'
+    EMO_PRE_AROUSAL: str = 'emo_pre_arousal'
