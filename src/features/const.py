@@ -1,11 +1,4 @@
-from enum import IntEnum
-
-class WristSignalsIdx(IntEnum):
-    """Indices of the wrist signals in the data array."""
-    HEART_RATE = 0
-    ACT_INTENSITY = 1
-    ACT_STEPS = 2
-    ACT_TYPE = 3
+from src.utils.const import SiTunesInterimWristColsIdx as WristSignalsIdx
 
 class BioFeatureNames:
     """Names of the extracted biological features."""

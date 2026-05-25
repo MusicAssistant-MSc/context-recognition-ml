@@ -1,4 +1,4 @@
-from src.utils.const import RAW_DATA_DIR, INTERIM_DATA_DIR
+from src.utils.const import RAW_DATA_DIR, INTERIM_DATA_DIR, SiTunesInterimInterEnvCols
 
 # --- SiTunes raw data to interim processing constants ---
 SITUNES_DATA_DIR = RAW_DATA_DIR / 'SiTunes'
@@ -59,12 +59,12 @@ SITUNES_STAGE_DATA_CONFIG = {
             SitunesEnvironmentDataKeys.GPS: ['longitude', 'latitude', 'speed']
         },
         SitunesConfigKeys.RENAME_COLS: {
-            'pressure': 'weather_pressure',
-            'temperature': 'weather_temp',
-            'humidity': 'weather_humidity',
-            'longitude': 'gps_lon',
-            'latitude': 'gps_lat',
-            'speed': 'gps_speed'
+            'pressure': SiTunesInterimInterEnvCols.WEATHER_PRESSURE,
+            'temperature': SiTunesInterimInterEnvCols.WEATHER_TEMP,
+            'humidity': SiTunesInterimInterEnvCols.WEATHER_HUMIDITY,
+            'longitude': SiTunesInterimInterEnvCols.GPS_LON,
+            'latitude': SiTunesInterimInterEnvCols.GPS_LAT,
+            'speed': SiTunesInterimInterEnvCols.GPS_SPEED
         },
         SitunesConfigKeys.DROP_COLS: [],
     },
