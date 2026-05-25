@@ -33,7 +33,7 @@ def extract_context_features(
     
     Args:
         inter_env_df (pd.DataFrame): The input DataFrame containing interim interaction and environment data.
-        inter_id_col (str): The name of the column in inter_env_df that contains the interaction IDs.
+        inter_id_col (str): The name of the column in inter_env_df that contains the interaction IDs used for indexing.
         feature_names_mapping (ContextFeatureNamesMapping): An instance of ContextFeatureNamesMapping 
             that defines the mapping between interim column names and context feature names.
 
@@ -50,7 +50,9 @@ def extract_context_features(
     
     # Add the interaction ID column to the source columns if it's not already included
     source_columns = [inter_id_col] + source_columns if inter_id_col not in source_columns else source_columns
-    # Select only the relevant columns and rename them according to the mapping
-    context_features_df = inter_env_df[source_columns].rename(columns=feature_names_mapping.column_mapping)
+    # Select only the relevant columns, add index based on the interaction ID and rename them according to the mapping
+    context_features_df = inter_env_df[source_columns].copy()
+    context_features_df.set_index(inter_id_col, drop=True, inplace=True)
+    context_features_df = context_features_df.rename(columns=feature_names_mapping.column_mapping)
     
     return context_features_df
