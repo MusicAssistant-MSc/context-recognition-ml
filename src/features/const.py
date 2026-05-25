@@ -1,5 +1,7 @@
 from src.utils.const import SiTunesInterimWristColsIdx as WristSignalsIdx
-from src.utils.const import SiTunesInterimInterEnvCols
+from src.utils.const import SiTunesInterimInterEnvCols, SiTunesInterimMusicCols
+
+
 class BioFeatureNames:
     """Names of the extracted biological features."""
     HR_MEAN = 'hr_mean'
@@ -28,3 +30,23 @@ class ContextFeatureNames:
     WEATHER_TEMP: str = 'context_weather_temp'
     WEATHER_HUMIDITY: str = 'context_weather_humidity'
     GPS_SPEED: str = 'context_gps_speed'
+
+class MusicFeatureNames:
+    """Names of the extracted music features."""
+    POPULARITY: str = "music_popularity"
+    LOUDNESS: str = "music_loudness"
+    DANCEABILITY: str = "music_danceability"
+    ENERGY: str = "music_energy"
+    KEY: str = "music_key"
+    SPEECHINESS: str = "music_speechiness"
+    ACOUSTICNESS: str = "music_acousticness"
+    INSTRUMENTALNESS: str = "music_instrumentalness"
+    VALENCE: str = "music_valence"
+    TEMPO: str = "music_tempo"
+    DURATION: str = "music_duration"
+    GENRE_ID: str = "music_genre_id"
+    # Low-level
+    F0_MEAN: str = "music_f0_mean"
+    RMS_ENERGY_STD: str = "music_rms_std"
+    ZCR_MEAN: str = "music_zcr_mean"
+    PSY_SHARPNESS_MEAN: str = "music_psy_sharpness_mean"
