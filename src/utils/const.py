@@ -2,10 +2,13 @@ from pathlib import Path
 from enum import IntEnum
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
 DATA_DIR = PROJECT_ROOT / 'data'
 RAW_DATA_DIR = DATA_DIR / 'raw'
 INTERIM_DATA_DIR = DATA_DIR / 'interim'
 PROCESSED_DATA_DIR = DATA_DIR / 'processed'
+
+REPORTS_DIR = PROJECT_ROOT / 'reports'
 
 PANDAS_DF_UNNAMED_COL_PREFIX = 'Unnamed: '
 
