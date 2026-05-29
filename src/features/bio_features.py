@@ -4,17 +4,32 @@ from scipy import stats
 from dataclasses import dataclass
 
 from src.features import const
+from src.features.feature_metadata import FeatureMetadata
+from src.features.feature_registry import FEATURE_REGISTRY
 
 
-@dataclass
-class BioFeatureNamesMapping:
-    hr_mean: str
-    hr_std: str
-    hr_min: str
-    hr_max: str
-    hr_trend_slope: str
-    hr_trend_r_value: str
-    hr_trend_std_err: str
+@dataclass(frozen=True)
+class BioFeatureMapping:
+    hr_mean: FeatureMetadata
+    hr_std: FeatureMetadata
+    hr_min: FeatureMetadata
+    hr_max: FeatureMetadata
+    hr_trend_slope: FeatureMetadata
+    hr_trend_r_value: FeatureMetadata
+    hr_trend_std_err: FeatureMetadata
+
+    @classmethod
+    def from_registry(cls) -> "BioFeatureMapping":
+        """Factory method to create BioFeatureMapping using global registry of features."""
+        return cls(
+            hr_mean=FEATURE_REGISTRY.get(const.BioFeatureNames.HR_MEAN),
+            hr_std=FEATURE_REGISTRY.get(const.BioFeatureNames.HR_STD),
+            hr_min=FEATURE_REGISTRY.get(const.BioFeatureNames.HR_MIN),
+            hr_max=FEATURE_REGISTRY.get(const.BioFeatureNames.HR_MAX),
+            hr_trend_slope=FEATURE_REGISTRY.get(const.BioFeatureNames.HR_TREND_SLOPE),
+            hr_trend_r_value=FEATURE_REGISTRY.get(const.BioFeatureNames.HR_TREND_R_VALUE),
+            hr_trend_std_err=FEATURE_REGISTRY.get(const.BioFeatureNames.HR_TREND_STD_ERR)
+        )
 
 
 def _calculate_regression_stats(
@@ -48,16 +63,8 @@ def _calculate_regression_stats(
 def extract_hr_features(
     wrist_data: np.ndarray, 
     inter_ids: list[str] | np.ndarray, 
-    hr_col_idx: int = const.WristSignalsIdx.HEART_RATE.value,
-    feature_names_mapping: BioFeatureNamesMapping = BioFeatureNamesMapping(
-        hr_mean=const.BioFeatureNames.HR_MEAN,
-        hr_std=const.BioFeatureNames.HR_STD,
-        hr_min=const.BioFeatureNames.HR_MIN,
-        hr_max=const.BioFeatureNames.HR_MAX,
-        hr_trend_slope=const.BioFeatureNames.HR_TREND_SLOPE,
-        hr_trend_r_value=const.BioFeatureNames.HR_TREND_R_VALUE,
-        hr_trend_std_err=const.BioFeatureNames.HR_TREND_STD_ERR
-    )
+    hr_col_idx: int = const.SiTunesInterimWristColsIdx.HEART_RATE.value,
+    feature_mapping: BioFeatureMapping = BioFeatureMapping.from_registry()
 ) -> pd.DataFrame:
     """Extract heart rate features from wrist data for specified intervals.
     
@@ -65,7 +72,7 @@ def extract_hr_features(
         wrist_data (np.ndarray): The raw wrist data containing heart rate information.
         inter_ids (list[str] | np.ndarray): A list or array of interval identifiers corresponding to the wrist data.
         hr_col_idx (int): The column index in the wrist data that contains heart rate values.
-        feature_names_mapping (BioFeatureNamesMapping): A mapping of feature names to be used in the output DataFrame.
+        feature_mapping (BioFeatureMapping): A mapping of feature objects with names to be used in the output DataFrame.
 
     Returns:
         pd.DataFrame: A DataFrame containing the extracted heart rate features for each interval.
@@ -75,28 +82,28 @@ def extract_hr_features(
 
     # Calculate basic statistics for each interaction HR column
     features = {
-        feature_names_mapping.hr_mean: np.mean(hr_matrix, axis=1),
-        feature_names_mapping.hr_std: np.std(hr_matrix, axis=1),
-        feature_names_mapping.hr_min: np.min(hr_matrix, axis=1),
-        feature_names_mapping.hr_max: np.max(hr_matrix, axis=1),
+        feature_mapping.hr_mean.name: np.mean(hr_matrix, axis=1),
+        feature_mapping.hr_std.name: np.std(hr_matrix, axis=1),
+        feature_mapping.hr_min.name: np.min(hr_matrix, axis=1),
+        feature_mapping.hr_max.name: np.max(hr_matrix, axis=1),
     }
 
     # Calculate regression statistics for each interaction HR column
     regression_stats = [
         _calculate_regression_stats(
             inter_matrix,
-            feature_names_mapping.hr_trend_slope,
-            feature_names_mapping.hr_trend_r_value,
-            feature_names_mapping.hr_trend_std_err
+            feature_mapping.hr_trend_slope.name,
+            feature_mapping.hr_trend_r_value.name,
+            feature_mapping.hr_trend_std_err.name
         ) for inter_matrix in hr_matrix
     ]
     
     # Add the regression statistics to the features dictionary
-    features[feature_names_mapping.hr_trend_slope] = [
-        stat[feature_names_mapping.hr_trend_slope] for stat in regression_stats]
-    features[feature_names_mapping.hr_trend_r_value] = [
-        stat[feature_names_mapping.hr_trend_r_value] for stat in regression_stats]
-    features[feature_names_mapping.hr_trend_std_err] = [
-        stat[feature_names_mapping.hr_trend_std_err] for stat in regression_stats]
+    features[feature_mapping.hr_trend_slope.name] = [
+        stat[feature_mapping.hr_trend_slope.name] for stat in regression_stats]
+    features[feature_mapping.hr_trend_r_value.name] = [
+        stat[feature_mapping.hr_trend_r_value.name] for stat in regression_stats]
+    features[feature_mapping.hr_trend_std_err.name] = [
+        stat[feature_mapping.hr_trend_std_err.name] for stat in regression_stats]
 
     return pd.DataFrame(features, index=inter_ids)

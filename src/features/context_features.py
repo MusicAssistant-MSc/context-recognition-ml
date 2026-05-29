@@ -1,46 +1,48 @@
 import pandas as pd
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from src.features import const
+from src.features.feature_metadata import FeatureMetadata, FeatureGroup
+from src.features.feature_registry import FEATURE_REGISTRY
 
 @dataclass
-class ContextFeatureNamesMapping:
-    """Mapping between interim column names and context feature names.
-    
-    Attributes:
-        column_mapping (dict[str, str]): A dictionary mapping interim column names to context feature names.
-    """
-    column_mapping: dict[str, str] = field(default_factory=lambda: {
-        const.SiTunesInterimInterEnvCols.TIME_PERIOD: const.ContextFeatureNames.TIME_PERIOD,
-        const.SiTunesInterimInterEnvCols.WEATHER_TYPE: const.ContextFeatureNames.WEATHER_TYPE,
-        const.SiTunesInterimInterEnvCols.WEATHER_PRESSURE: const.ContextFeatureNames.WEATHER_PRESSURE,
-        const.SiTunesInterimInterEnvCols.WEATHER_TEMP: const.ContextFeatureNames.WEATHER_TEMP,
-        const.SiTunesInterimInterEnvCols.WEATHER_HUMIDITY: const.ContextFeatureNames.WEATHER_HUMIDITY,
-        const.SiTunesInterimInterEnvCols.GPS_SPEED: const.ContextFeatureNames.GPS_SPEED
-    })
+class ContextFeatureMapping:
+    context_features: list[FeatureMetadata]
 
+    @classmethod
+    def from_registry(cls) -> "ContextFeatureMapping":
+        """Factory method to create ContextFeatureMapping using global registry of features."""
+        return cls(context_features=FEATURE_REGISTRY.get_by_group(FeatureGroup.CONTEXT))
+    
     def get_source_columns(self) -> list[str]:
         """Get the list of source column names from the interim data."""
-        return list(self.column_mapping.keys())
+        return [feature.interim_name for feature in self.context_features]
+    
+    def get_feature_names_mapping(self) -> dict[str, str]:
+        """Get the dict for interim to feature names mapping."""
+        return {
+            feature.interim_name: feature.name
+            for feature in self.context_features
+        }
     
 
 def extract_context_features(
     inter_env_df: pd.DataFrame,
     inter_id_col: str = const.SiTunesInterimInterEnvCols.INTER_ID,
-    feature_names_mapping: ContextFeatureNamesMapping = ContextFeatureNamesMapping()
+    feature_mapping: ContextFeatureMapping = ContextFeatureMapping.from_registry()
 ) -> pd.DataFrame:
     """Extract context features from the interim interaction and environment DataFrame and rename them.
     
     Args:
         inter_env_df (pd.DataFrame): The input DataFrame containing interim interaction and environment data.
         inter_id_col (str): The name of the column in inter_env_df that contains the interaction IDs used for indexing.
-        feature_names_mapping (ContextFeatureNamesMapping): An instance of ContextFeatureNamesMapping 
-            that defines the mapping between interim column names and context feature names.
+        feature_mapping (ContextFeatureMapping): An instance of ContextFeatureMapping with a list of FeatureMetadata
+            objects that allows to get the mapping between interim column names and context feature names.
 
     Returns:
         pd.DataFrame: A new DataFrame containing only the extracted context features with standardized column names.
     """
-    source_columns = feature_names_mapping.get_source_columns()
+    source_columns = feature_mapping.get_source_columns()
     
     if not all(col in inter_env_df.columns for col in source_columns):
         missing_cols = [col for col in source_columns if col not in inter_env_df.columns]
@@ -53,6 +55,6 @@ def extract_context_features(
     # Select only the relevant columns, add index based on the interaction ID and rename them according to the mapping
     context_features_df = inter_env_df[source_columns].copy()
     context_features_df.set_index(inter_id_col, drop=True, inplace=True)
-    context_features_df = context_features_df.rename(columns=feature_names_mapping.column_mapping)
+    context_features_df = context_features_df.rename(columns=feature_mapping.get_feature_names_mapping())
     
     return context_features_df

@@ -4,17 +4,32 @@ from scipy import stats
 from dataclasses import dataclass
 
 from src.features import const
+from src.features.feature_metadata import FeatureMetadata
+from src.features.feature_registry import FEATURE_REGISTRY
 
 
 @dataclass
-class MotionFeatureNamesMapping:
-    act_intensity_mean: str
-    act_intensity_std: str
-    act_intensity_max: str
-    act_steps_sum: str
-    act_steps_active_ratio: str
-    act_type_dominant: str
-    act_type_changes_count: str
+class MotionFeatureMapping:
+    act_intensity_mean: FeatureMetadata
+    act_intensity_std: FeatureMetadata
+    act_intensity_max: FeatureMetadata
+    act_steps_sum: FeatureMetadata
+    act_steps_active_ratio: FeatureMetadata
+    act_type_dominant: FeatureMetadata
+    act_type_changes_count: FeatureMetadata
+
+    @classmethod
+    def from_registry(cls) -> "MotionFeatureMapping":
+        """Factory method to create MotionFeatureMapping using global registry of features."""
+        return cls(
+            act_intensity_mean=FEATURE_REGISTRY.get(const.MotionFeatureNames.ACT_INTENSITY_MEAN),
+            act_intensity_std=FEATURE_REGISTRY.get(const.MotionFeatureNames.ACT_INTENSITY_STD),
+            act_intensity_max=FEATURE_REGISTRY.get(const.MotionFeatureNames.ACT_INTENSITY_MAX),
+            act_steps_sum=FEATURE_REGISTRY.get(const.MotionFeatureNames.ACT_STEPS_SUM),
+            act_steps_active_ratio=FEATURE_REGISTRY.get(const.MotionFeatureNames.ACT_STEPS_ACTIVE_RATIO),
+            act_type_dominant=FEATURE_REGISTRY.get(const.MotionFeatureNames.ACT_TYPE_DOMINANT),
+            act_type_changes_count=FEATURE_REGISTRY.get(const.MotionFeatureNames.ACT_TYPE_CHANGES_COUNT)
+        )
 
 
 def _calculate_non_zero_values_ratio(signal: np.ndarray) -> float:
@@ -67,18 +82,10 @@ def _count_value_changes(signal: np.ndarray) -> int:
 def extract_motion_features(
     wrist_data: np.ndarray, 
     inter_ids: list[str] | np.ndarray, 
-    act_intensity_col_idx: int = const.WristSignalsIdx.ACT_INTENSITY.value,
-    act_steps_col_idx: int = const.WristSignalsIdx.ACT_STEPS.value,
-    act_type_col_idx: int = const.WristSignalsIdx.ACT_TYPE.value,
-    feature_names_mapping: MotionFeatureNamesMapping = MotionFeatureNamesMapping(
-        act_intensity_mean=const.MotionFeatureNames.ACT_INTENSITY_MEAN,
-        act_intensity_std=const.MotionFeatureNames.ACT_INTENSITY_STD,
-        act_intensity_max=const.MotionFeatureNames.ACT_INTENSITY_MAX,
-        act_steps_sum=const.MotionFeatureNames.ACT_STEPS_SUM,
-        act_steps_active_ratio=const.MotionFeatureNames.ACT_STEPS_ACTIVE_RATIO,
-        act_type_dominant=const.MotionFeatureNames.ACT_TYPE_DOMINANT,
-        act_type_changes_count=const.MotionFeatureNames.ACT_TYPE_CHANGES_COUNT
-    )
+    act_intensity_col_idx: int = const.SiTunesInterimWristColsIdx.ACT_INTENSITY.value,
+    act_steps_col_idx: int = const.SiTunesInterimWristColsIdx.ACT_STEPS.value,
+    act_type_col_idx: int = const.SiTunesInterimWristColsIdx.ACT_TYPE.value,
+    feature_mapping: MotionFeatureMapping = MotionFeatureMapping.from_registry()
 ) -> pd.DataFrame:
     """Extract motion features from wrist data.
     
@@ -88,7 +95,7 @@ def extract_motion_features(
         act_intensity_col_idx (int): The column index for the activity intensity signal in the wrist data.
         act_steps_col_idx (int): The column index for the activity steps signal in the wrist data.
         act_type_col_idx (int): The column index for the activity type signal in the wrist data.
-        feature_names_mapping (MotionFeatureNamesMapping): A mapping of feature names to be used in the output DataFrame.
+        feature_mapping (MotionFeatureMapping): A mapping of feature objects with names to be used in the output DataFrame.
 
     Returns:
         pd.DataFrame: A DataFrame containing the extracted motion features for each interaction ID.
@@ -98,15 +105,15 @@ def extract_motion_features(
     act_type_matrix = wrist_data[:, :, act_type_col_idx]
 
     features = {
-        feature_names_mapping.act_intensity_mean: np.mean(act_intensity_matrix, axis=1),
-        feature_names_mapping.act_intensity_std: np.std(act_intensity_matrix, axis=1),
-        feature_names_mapping.act_intensity_max: np.max(act_intensity_matrix, axis=1),
-        feature_names_mapping.act_steps_sum: np.sum(act_steps_matrix, axis=1),
-        feature_names_mapping.act_steps_active_ratio: np.array([
+        feature_mapping.act_intensity_mean.name: np.mean(act_intensity_matrix, axis=1),
+        feature_mapping.act_intensity_std.name: np.std(act_intensity_matrix, axis=1),
+        feature_mapping.act_intensity_max.name: np.max(act_intensity_matrix, axis=1),
+        feature_mapping.act_steps_sum.name: np.sum(act_steps_matrix, axis=1),
+        feature_mapping.act_steps_active_ratio.name: np.array([
             _calculate_non_zero_values_ratio(inter_matrix) for inter_matrix in act_steps_matrix]),
-        feature_names_mapping.act_type_dominant: np.array([
+        feature_mapping.act_type_dominant.name: np.array([
             _find_dominant_value(inter_matrix) for inter_matrix in act_type_matrix]),
-        feature_names_mapping.act_type_changes_count: np.array([
+        feature_mapping.act_type_changes_count.name: np.array([
             _count_value_changes(inter_matrix) for inter_matrix in act_type_matrix])
     }
 
