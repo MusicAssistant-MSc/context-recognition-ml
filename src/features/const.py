@@ -1,3 +1,6 @@
+from typing import Final
+from enum import StrEnum, auto
+
 from src.utils.const import SiTunesInterimWristColsIdx
 from src.utils.const import SiTunesInterimInterEnvCols, SiTunesInterimMusicCols
 
@@ -55,3 +58,54 @@ class EmotionFeatureNames:
     """Names of the extracted emotion features."""
     EMO_PRE_VALENCE: str = 'emo_pre_valence'
     EMO_PRE_AROUSAL: str = 'emo_pre_arousal'
+
+
+class FeaturePreprocessingStats(StrEnum):
+    """Names of statistics used for preprocessing pipeline decisions."""
+    SKEWNESS = auto()
+    KURTOSIS = auto()
+    STD_DEV = auto()
+
+class PreprocessingStrategy(StrEnum):
+    """Available preprocessing strategies for ML model families."""
+    TREE_BASED = auto()
+    DISTANCE_BASED = auto()
+
+class DistanceMLPreprocessingSubStrategies(StrEnum):
+    """
+    Names of sub-strategies (groups) of features used for distance-based ML preprocessing decisions.
+    Also used as transformer names in ColumnTransformer for distance-based ML algorithms.
+    """
+    QUANTILE = auto()
+    POWER = auto()
+    BOUNDED = auto()
+    ROBUST = auto()
+    STANDARD = auto()
+    CATEGORICAL = auto()
+
+
+# Thresholds for statistical preprocessing decisions
+SKEW_EXTREME_THRESHOLD: Final[float] = 2.0
+SKEW_MODERATE_THRESHOLD: Final[float] = 1.0
+# Fisher excess kurtosis threshold (normal distribution kurtosis == 0)
+KURT_EXTREME_THRESHOLD: Final[float] = 3.0
+KURT_MODERATE_THRESHOLD: Final[float] = 1.0
+
+# Quantile transformer defaults
+QUANTILE_OUTPUT_DISTRIBUTION: Final[str] = "normal"
+QUANTILE_RANDOM_STATE: Final[int] = 42
+
+# Power transformer defaults
+POWER_METHOD: Final[str] = "yeo-johnson"
+POWER_STANDARDIZE: Final[bool] = True
+
+# OneHotEncoder defaults
+OHE_HANDLE_UNKNOWN: Final[str] = "ignore"
+OHE_SPARSE_OUTPUT: Final[bool] = False
+
+# ColumnTransformer defaults
+COL_TRANSFORMER_REMAINDER = "drop"
+
+# Tree-based sub-transformers defaults
+TREE_NUM_TRANSFORMER_NAME: Final[str] = "numeric"
+TREE_CAT_TRANSFORMER_NAME: Final[str] = "categorical"
