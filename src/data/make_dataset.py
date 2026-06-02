@@ -2,7 +2,7 @@ from pathlib import Path
 import logging
 
 from src.data import file_loader, situnes_music_loader, situnes_stage_loader
-from src.utils import const
+from src.data import const
 
 
 def build_interim_data(

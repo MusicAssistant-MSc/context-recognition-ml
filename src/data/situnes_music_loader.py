@@ -1,8 +1,16 @@
 import pandas as pd
 
 from src.data import file_loader
-from src.utils import const
-from src.utils.data_utils import *
+from src.data import const
+from src.utils.data_utils import (
+    check_column_uniqueness, 
+    get_shared_columns, 
+    drop_df_columns, 
+    consolidate_column_pair, 
+    verify_series_identity, 
+    consolidate_redundant_columns, 
+    round_numeric_columns
+)
 
 def load_music_metadata(
     music_config: dict = const.SITUNES_MUSIC_METADATA_CONFIG,
