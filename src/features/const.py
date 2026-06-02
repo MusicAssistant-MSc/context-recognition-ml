@@ -109,3 +109,9 @@ COL_TRANSFORMER_REMAINDER = "drop"
 # Tree-based sub-transformers defaults
 TREE_NUM_TRANSFORMER_NAME: Final[str] = "numeric"
 TREE_CAT_TRANSFORMER_NAME: Final[str] = "categorical"
+
+# SimpleImputer defaults
+IMPUTER_NAME: Final[str] = "imputer"
+NUMERIC_IMPUTER_STRATEGY: Final[str] = "median"
+CATEGORICAL_IMPUTER_STRATEGY: Final[str] = "most_frequent"
+IMPUTER_FILL_VALUE: Final[str | None] = None

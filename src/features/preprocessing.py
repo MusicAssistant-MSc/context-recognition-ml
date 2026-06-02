@@ -2,6 +2,8 @@ from typing import Any
 import pandas as pd
 from sklearn.preprocessing import RobustScaler, MinMaxScaler, StandardScaler
 from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
 
 from src.features.const import (
     PreprocessingStrategy,
@@ -18,7 +20,11 @@ from src.features.const import (
     POWER_STANDARDIZE,
     OHE_HANDLE_UNKNOWN,
     OHE_SPARSE_OUTPUT,
-    COL_TRANSFORMER_REMAINDER
+    COL_TRANSFORMER_REMAINDER,
+    IMPUTER_NAME,
+    NUMERIC_IMPUTER_STRATEGY,
+    CATEGORICAL_IMPUTER_STRATEGY,
+    IMPUTER_FILL_VALUE
 )
 from src.features.feature_registry import FeatureRegistry, FEATURE_REGISTRY
 from src.features.preprocessing_utils import (
@@ -31,13 +37,53 @@ from src.features.preprocessing_utils import (
 )
 
 
+def _build_sub_strat_imputer_pipeline(
+    main_transformer: Any,
+    main_transformer_name: str,
+    imputer_name: str,
+    imputer_strategy: str,
+    fill_value: str | None = None,
+    add_indicator: bool = False
+) -> Pipeline:
+    """Build a Pipeline with SimpleImputer at the beginning and passed transformer afterwards.
+    
+    Args:
+        main_transformer (Any): Transformer to apply after imputer.
+        main_transformer_name (str): Name of main transformer to use as a step name.
+        imputer_name (str): Name of imputer to use as a step name.
+        imputer_strategy (str): Imputer strategy to use (e.g. 'constant', 'mean', 'median', 'most_frequent').
+        fill_value (str | None, optional): Imputer fill value used with strategy='constant'. Defaults to None.
+        add_indicator (bool, optional): Whether to add missing value indicator features. Defaults to False.
+
+    Returns:
+        Pipeline: Pipeline with SimpleImputer at the beginning and passed transformer afterwards.
+    """
+    return Pipeline(
+        steps= [
+            (imputer_name, 
+                SimpleImputer(
+                    strategy=imputer_strategy, 
+                    fill_value=fill_value,
+                    add_indicator=add_indicator
+                )
+            ),
+            (main_transformer_name, main_transformer)
+        ]
+    )
+
+
 def build_tree_based_preprocessor(
     feature_names: list[str], 
+    use_imputer: bool,
     feature_registry: FeatureRegistry = FEATURE_REGISTRY,
     ohe_handle_unknown: str = OHE_HANDLE_UNKNOWN,
     ohe_sparse_output: bool = OHE_SPARSE_OUTPUT,
     num_transformer_name: str = TREE_NUM_TRANSFORMER_NAME,
     cat_transformer_name: str = TREE_CAT_TRANSFORMER_NAME,
+    imputer_name: str = IMPUTER_NAME,
+    num_imputer_strategy: str = NUMERIC_IMPUTER_STRATEGY,
+    cat_imputer_strategy: str = CATEGORICAL_IMPUTER_STRATEGY,
+    imputer_fill_value: str | None = IMPUTER_FILL_VALUE,
     col_trans_remainder: str = COL_TRANSFORMER_REMAINDER
 ) -> ColumnTransformer:
     """Build preprocessing for tree-based models.
@@ -47,11 +93,16 @@ def build_tree_based_preprocessor(
 
     Args:
         feature_names (list[str]): Feature names to process.
+        use_imputer (bool): Whether to use SimpleImputer to impute missing values for tree-based models.
         feature_registry (FeatureRegistry): Feature metadata registry.
         ohe_handle_unknown (str): OneHotEncoder handle_unknown parameter.
         ohe_sparse_output (bool): OneHotEncoder sparse_output parameter.
         num_transformer_name (str): Name of numeric transformer.
         cat_transformer_name (str): Name of categorical transformer.
+        imputer_name (str): Name of imputer step in pipeline.
+        num_imputer_strategy (str): Imputer strategy for numeric features.
+        cat_imputer_strategy (str): Imputer strategy for categorical features.
+        imputer_fill_value (str | None): Imputer fill value for strategy='constant'.
         col_trans_remainder (str): ColumnTransformer remainder parameter.
 
     Returns:
@@ -61,16 +112,36 @@ def build_tree_based_preprocessor(
     num_feat_names = get_numeric_feature_names(feature_names, feature_registry)
     cat_feat_names = get_categorical_feature_names(feature_names, feature_registry)
 
+    # Build transformers
+    if use_imputer:
+        num_transformer = _build_sub_strat_imputer_pipeline(
+            main_transformer="passthrough",
+            main_transformer_name=num_transformer_name,
+            imputer_name=imputer_name,
+            imputer_strategy=num_imputer_strategy,
+            fill_value=imputer_fill_value
+        )
+        cat_transformer = _build_sub_strat_imputer_pipeline(
+            main_transformer=build_one_hot_encoder(ohe_handle_unknown, ohe_sparse_output),
+            main_transformer_name=cat_transformer_name,
+            imputer_name=imputer_name,
+            imputer_strategy=cat_imputer_strategy,
+            fill_value=imputer_fill_value
+        )
+    else:
+        num_transformer = "passthrough"
+        cat_transformer = build_one_hot_encoder(ohe_handle_unknown, ohe_sparse_output)
+
     return ColumnTransformer(
         transformers=[
             (
                 num_transformer_name,
-                "passthrough",
+                num_transformer,
                 num_feat_names
             ),
             (
                 cat_transformer_name,
-                build_one_hot_encoder(ohe_handle_unknown, ohe_sparse_output),
+                cat_transformer,
                 cat_feat_names
             )
         ],
@@ -168,6 +239,10 @@ def build_distance_based_preprocessor(
     quantile_rand_state: int = QUANTILE_RANDOM_STATE,
     power_method: str = POWER_METHOD,
     power_standardize: bool = POWER_STANDARDIZE,
+    imputer_name: str = IMPUTER_NAME,
+    num_imputer_strategy: str = NUMERIC_IMPUTER_STRATEGY,
+    cat_imputer_strategy: str = CATEGORICAL_IMPUTER_STRATEGY,
+    imputer_fill_value: str | None = IMPUTER_FILL_VALUE,
     col_trans_remainder: str = COL_TRANSFORMER_REMAINDER
 ) -> ColumnTransformer:
     """Build preprocessing for scale-sensitive models.
@@ -188,7 +263,22 @@ def build_distance_based_preprocessor(
         feature_df (pd.DataFrame): DataFrame containing feature data.
         feature_names (list[str]): Feature names to process.
         feature_registry (FeatureRegistry): Feature metadata registry.
-
+        preproc_sub_strats_names (DistanceMLPreprocessingSubStrategies): Preprocessing sub-strategy (feature groups) names.
+        extreme_skew (float): Extreme skewness threshold.
+        moderate_skew (float): Moderate skewness threshold.
+        extreme_kurt (float): Extreme kurtosis threshold.
+        moderate_kurt (float): Moderate kurtosis threshold.
+        ohe_handle_unknown (str): OneHotEncoder handle_unknown parameter.
+        ohe_sparse_output (bool): OneHotEncoder sparse_output parameter.
+        quantile_out_dist (str): QuantileTransformer output_distribution parameter.
+        quantile_rand_state (int): QuantileTransformer random_state parameter.
+        power_method (str): PowerTransformer method parameter.
+        power_standardize (bool): PowerTransformer standardize parameter.
+        imputer_name (str): Name of imputer step in pipeline.
+        num_imputer_strategy (str): Imputer strategy for numeric features.
+        cat_imputer_strategy (str): Imputer strategy for categorical features.
+        imputer_fill_value (str | None): Imputer fill_value parameter.
+        col_trans_remainder (str): ColumnTransformer remainder parameter.
 
     Returns:
         Configured ColumnTransformer for distance-based models.
@@ -207,55 +297,102 @@ def build_distance_based_preprocessor(
     transformers: list[tuple[str, Any, list[str]]] = []
 
     if preprocessing_groups[preproc_sub_strats_names.CATEGORICAL]:
+        cat_transformer = _build_sub_strat_imputer_pipeline(
+            main_transformer=build_one_hot_encoder(ohe_handle_unknown, ohe_sparse_output),
+            main_transformer_name=preproc_sub_strats_names.CATEGORICAL,
+            imputer_name=imputer_name,
+            imputer_strategy=cat_imputer_strategy,
+            fill_value=imputer_fill_value,
+        )
         transformers.append(
             (
                 preproc_sub_strats_names.CATEGORICAL,
-                build_one_hot_encoder(ohe_handle_unknown, ohe_sparse_output),
+                cat_transformer,
                 preprocessing_groups[preproc_sub_strats_names.CATEGORICAL]
             )
         )
 
     if preprocessing_groups[preproc_sub_strats_names.QUANTILE]:
+        quant_transformer = _build_sub_strat_imputer_pipeline(
+            main_transformer=build_quantile_transformer(quantile_out_dist, quantile_rand_state),
+            main_transformer_name=preproc_sub_strats_names.QUANTILE,
+            imputer_name=imputer_name,
+            imputer_strategy=num_imputer_strategy,
+            fill_value=imputer_fill_value,
+            add_indicator=True
+        )
         transformers.append(
             (
                 preproc_sub_strats_names.QUANTILE,
-                build_quantile_transformer(quantile_out_dist, quantile_rand_state),
+                quant_transformer,
                 preprocessing_groups[preproc_sub_strats_names.QUANTILE]
             )
         )
 
     if preprocessing_groups[preproc_sub_strats_names.POWER]:
+        power_transformer = _build_sub_strat_imputer_pipeline(
+            main_transformer=build_power_transformer(power_method, power_standardize),
+            main_transformer_name=preproc_sub_strats_names.POWER,
+            imputer_name=imputer_name,
+            imputer_strategy=num_imputer_strategy,
+            fill_value=imputer_fill_value,
+            add_indicator=True
+        )
         transformers.append(
             (
                 preproc_sub_strats_names.POWER,
-                build_power_transformer(power_method, power_standardize),
+                power_transformer,
                 preprocessing_groups[preproc_sub_strats_names.POWER]
             )
         )
 
     if preprocessing_groups[preproc_sub_strats_names.BOUNDED]:
+        bound_transformer = _build_sub_strat_imputer_pipeline(
+            main_transformer=MinMaxScaler(),
+            main_transformer_name=preproc_sub_strats_names.BOUNDED,
+            imputer_name=imputer_name,
+            imputer_strategy=num_imputer_strategy,
+            fill_value=imputer_fill_value,
+            add_indicator=True
+        )
         transformers.append(
             (
                 preproc_sub_strats_names.BOUNDED,
-                MinMaxScaler(),
+                bound_transformer,
                 preprocessing_groups[preproc_sub_strats_names.BOUNDED]
             )
         )
 
     if preprocessing_groups[preproc_sub_strats_names.ROBUST]:
+        rob_transformer = _build_sub_strat_imputer_pipeline(
+            main_transformer=RobustScaler(),
+            main_transformer_name=preproc_sub_strats_names.ROBUST,
+            imputer_name=imputer_name,
+            imputer_strategy=num_imputer_strategy,
+            fill_value=imputer_fill_value,
+            add_indicator=True
+        )
         transformers.append(
             (
                 preproc_sub_strats_names.ROBUST,
-                RobustScaler(),
+                rob_transformer,
                 preprocessing_groups[preproc_sub_strats_names.ROBUST]
             )
         )
 
     if preprocessing_groups[preproc_sub_strats_names.STANDARD]:
+        std_transformer = _build_sub_strat_imputer_pipeline(
+            main_transformer=StandardScaler(),
+            main_transformer_name=preproc_sub_strats_names.STANDARD,
+            imputer_name=imputer_name,
+            imputer_strategy=num_imputer_strategy,
+            fill_value=imputer_fill_value,
+            add_indicator=True
+        )
         transformers.append(
             (
                 preproc_sub_strats_names.STANDARD,
-                StandardScaler(),
+                std_transformer,
                 preprocessing_groups[preproc_sub_strats_names.STANDARD]
             )
         )
@@ -266,14 +403,16 @@ def build_distance_based_preprocessor(
 def build_feature_preprocessor(
     strategy: PreprocessingStrategy,
     feature_names: list[str],
-    feature_df: pd.DataFrame
+    feature_df: pd.DataFrame,
+    use_imputer_for_tree: bool
 ) -> ColumnTransformer:
     """Build preprocessing pipeline for selected ML strategy.
 
     Args:
-        strategy (PreprocessingStrategy): Selected preprocessing strategy (e.g. TREE_BASED or DISTANCE_BASED).
+        strategy (PreprocessingStrategy): Selected preprocessing strategy based on ML model family (e.g. TREE_BASED or DISTANCE_BASED).
         feature_names (list[str]): List of feature names to process.
         feature_df (pd.DataFrame): DataFrame containing feature data for statistics calculation.
+        use_imputer_for_tree (bool): Whether to use SimpleImputer to impute missing values for tree-based models.
 
     Returns:
         Configured sklearn ColumnTransformer.
@@ -283,8 +422,8 @@ def build_feature_preprocessor(
     """
     match strategy:
         case PreprocessingStrategy.TREE_BASED:
-            return build_tree_based_preprocessor(feature_names)
+            return build_tree_based_preprocessor(feature_names=feature_names, use_imputer=use_imputer_for_tree)
         case PreprocessingStrategy.DISTANCE_BASED:
-            return build_distance_based_preprocessor(feature_df, feature_names)
+            return build_distance_based_preprocessor(feature_df=feature_df, feature_names=feature_names)
         case _:
             raise ValueError(f"Unsupported preprocessing strategy: {strategy}")
