@@ -58,7 +58,7 @@ def get_numeric_feature_names(feature_names: list[str], feature_registry: Featur
         list[str]: A list of feature names representing numeric features.
     """
     feature_metadata = feature_registry.get_features(feature_names)
-    numeric_features = feature_registry.filter(kind=FeatureKind.NUMERIC, source=feature_metadata)
+    numeric_features = feature_registry.filter(kind=FeatureKind.NUMERICAL, source=feature_metadata)
     numeric_names = feature_registry.get_names(numeric_features)
     return numeric_names
 
