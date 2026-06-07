@@ -3,6 +3,8 @@ from typing import Any, Final
 from src.models.hyperparameters.metadata import HyperparameterMetadata
 from src.models.const import ModelAlgorithm
 from src.models.hyperparameters.xgboost_hp import XGBOOST_HYPERPARAMETERS
+from src.models.hyperparameters.lightgbm_hp import LIGHTGBM_HYPERPARAMETERS
+from src.models.hyperparameters.random_forest_hp import RANDOM_FOREST_HYPERPARAMETERS
 
 
 class HyperparameterRegistry:
@@ -41,7 +43,13 @@ class HyperparameterNamesRegistry:
     pass
     
 
-_hp_metadata_lists: list[list[HyperparameterMetadata]] = [XGBOOST_HYPERPARAMETERS, []]
+_hp_metadata_lists: list[list[HyperparameterMetadata]] = [
+    XGBOOST_HYPERPARAMETERS, 
+    LIGHTGBM_HYPERPARAMETERS,
+    RANDOM_FOREST_HYPERPARAMETERS,
+    []
+]
+
 HYPERPARAMETERS_REGISTRY: Final[HyperparameterRegistry] = HyperparameterRegistry([
     hp for hp_list in _hp_metadata_lists for hp in hp_list
 ])
