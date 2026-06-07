@@ -1,7 +1,8 @@
 from enum import StrEnum, auto
 from typing import Final
+from pathlib import Path
 
-from src.utils.const import SiTunesInterimInterEnvCols, SiTunesInterimMusicCols
+from src.utils.const import SiTunesInterimInterEnvCols, SiTunesInterimMusicCols, SAVED_MODELS_DIR, REPORTS_DIR
 
 
 class ModelAlgorithm(StrEnum):
@@ -38,6 +39,16 @@ class RegressionMetrics(StrEnum):
 # Random state constant
 RANDOM_STATE: Final[int] = 42
 
+# Default file extensions
+MODEL_EXT: Final[str] = ".joblib"
+METRICS_EXT: Final[str] = ".json"
+SUMMARY_CSV_NAME: Final[str] = "experiment_summary.csv"
+
+# Directories for saving models and reports
+SAVED_MODELS_DIR: Final[Path] = SAVED_MODELS_DIR
+REPORTS_DIR: Final[Path] = REPORTS_DIR
+METRICS_DIR: Final[Path] = REPORTS_DIR / "metrics"
+
 # Default hyperparameter name prefix
 HYPERPARAMETER_MODEL_PREFIX: Final[str] = "model"
 
@@ -59,7 +70,7 @@ DEFAULT_INNER_CV_STRATEGY: Final[CrossValidationStrategy] = CrossValidationStrat
 DEFAULT_INNER_CV_SPLITS: Final[int] = 4
 
 # --- Default hyperparameter tuning settings ---
-RANDOMIZED_SEARCH_ITER: Final[int] = 20
+RANDOMIZED_SEARCH_ITER: Final[int] = 50
 RANDOMIZED_SEARCH_SCORING: Final[str] = "neg_mean_squared_error"
 RANDOMIZED_SEARCH_N_JOBS: Final[int] = -1 # Use all available CPU cores for tuning
 

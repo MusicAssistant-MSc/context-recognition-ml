@@ -5,6 +5,9 @@ from src.models.const import ModelAlgorithm
 from src.models.hyperparameters.xgboost_hp import XGBOOST_HYPERPARAMETERS
 from src.models.hyperparameters.lightgbm_hp import LIGHTGBM_HYPERPARAMETERS
 from src.models.hyperparameters.random_forest_hp import RANDOM_FOREST_HYPERPARAMETERS
+from src.models.hyperparameters.svr_hp import SVR_HYPERPARAMETERS
+from src.models.hyperparameters.ridge_hp import RIDGE_HYPERPARAMETERS
+from src.models.hyperparameters.mlp_hp import MLP_HYPERPARAMETERS
 
 
 class HyperparameterRegistry:
@@ -47,6 +50,9 @@ _hp_metadata_lists: list[list[HyperparameterMetadata]] = [
     XGBOOST_HYPERPARAMETERS, 
     LIGHTGBM_HYPERPARAMETERS,
     RANDOM_FOREST_HYPERPARAMETERS,
+    SVR_HYPERPARAMETERS,
+    RIDGE_HYPERPARAMETERS,
+    MLP_HYPERPARAMETERS,
     []
 ]
 
