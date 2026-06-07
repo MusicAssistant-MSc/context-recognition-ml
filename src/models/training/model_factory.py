@@ -2,6 +2,7 @@ from typing import Any
 
 from src.models.const import ModelAlgorithm
 from src.models.training import tree_models
+from src.models.training import distance_models
 from src.models.hyperparameters.registry import HYPERPARAMETERS_REGISTRY
 
 def get_unfitted_model(
@@ -25,5 +26,11 @@ def get_unfitted_model(
             return tree_models.create_lightgbm_regressor(**params)
         case ModelAlgorithm.RANDOM_FOREST:
             return tree_models.create_random_forest_regressor(**params)
+        case ModelAlgorithm.SVR:
+            return distance_models.create_svr_regressor(**params)
+        case ModelAlgorithm.MLP:
+            return distance_models.create_mlp_regressor(**params)
+        case ModelAlgorithm.RIDGE:
+            return distance_models.create_ridge_regressor(**params)
         case _:
             raise ValueError(f"Unsupported algorithm: {algorithm}")
