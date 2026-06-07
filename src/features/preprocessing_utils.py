@@ -13,9 +13,14 @@ def build_one_hot_encoder(handle_unknown: str, sparse_output: bool) -> OneHotEnc
     )
 
 
-def build_quantile_transformer(quantile_out_dist: str, random_state: int) -> QuantileTransformer:
+def build_quantile_transformer(
+    n_quantiles: int,
+    quantile_out_dist: str, 
+    random_state: int
+) -> QuantileTransformer:
     """Build configured QuantileTransformer."""
     return QuantileTransformer(
+        n_quantiles=n_quantiles,
         output_distribution=quantile_out_dist,
         random_state=random_state
     )

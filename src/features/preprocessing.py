@@ -14,6 +14,7 @@ from src.features.const import (
     SKEW_MODERATE_THRESHOLD,
     KURT_EXTREME_THRESHOLD,
     KURT_MODERATE_THRESHOLD,
+    QUANTILE_N_QUANTILES,
     QUANTILE_OUTPUT_DISTRIBUTION,
     QUANTILE_RANDOM_STATE,
     POWER_METHOD,
@@ -235,6 +236,7 @@ def build_distance_based_preprocessor(
     moderate_kurt: float = KURT_MODERATE_THRESHOLD,
     ohe_handle_unknown: str = OHE_HANDLE_UNKNOWN,
     ohe_sparse_output: bool = OHE_SPARSE_OUTPUT,
+    quantile_n_quantiles: int = QUANTILE_N_QUANTILES,
     quantile_out_dist: str = QUANTILE_OUTPUT_DISTRIBUTION,
     quantile_rand_state: int = QUANTILE_RANDOM_STATE,
     power_method: str = POWER_METHOD,
@@ -314,7 +316,7 @@ def build_distance_based_preprocessor(
 
     if preprocessing_groups[preproc_sub_strats_names.QUANTILE]:
         quant_transformer = _build_sub_strat_imputer_pipeline(
-            main_transformer=build_quantile_transformer(quantile_out_dist, quantile_rand_state),
+            main_transformer=build_quantile_transformer(quantile_n_quantiles, quantile_out_dist, quantile_rand_state),
             main_transformer_name=preproc_sub_strats_names.QUANTILE,
             imputer_name=imputer_name,
             imputer_strategy=num_imputer_strategy,
