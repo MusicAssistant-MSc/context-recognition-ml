@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 def run_ablation_study() -> None:
     """Run ablation study for all algorithms."""
     # Setup logging to both console and file
-    timestamp = datetime.now().isoformat()
+    timestamp = datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
     logging.basicConfig(
         level=logging.INFO,
         format=LOG_FORMAT,
