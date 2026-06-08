@@ -12,13 +12,15 @@ from src.models.hyperparameters.mlp_hp import MLP_HYPERPARAMETERS
 
 class HyperparameterRegistry:
     def __init__(self, hyperparameters: list[HyperparameterMetadata]):
-        self._hyperparameters: dict[str, HyperparameterMetadata] = {hp.name: hp for hp in hyperparameters}
+        self._hyperparameters: dict[tuple[ModelAlgorithm, str], HyperparameterMetadata] = {
+            (hp.algorithm, hp.name): hp for hp in hyperparameters
+        }
 
-    def __getitem__(self, name: str) -> HyperparameterMetadata:
+    def __getitem__(self, key: tuple[ModelAlgorithm, Any]) -> HyperparameterMetadata:
         try:
-            return self._hyperparameters[name]
+            return self._hyperparameters[key]
         except KeyError:
-            raise KeyError(f"Hyperparameter '{name}' not found in registry.")
+            raise KeyError(f"Hyperparameter '{key[1]}' for algorithm '{key[0]}' not found in registry.")
 
     def get_by_algorithm(self, algorithm: ModelAlgorithm) -> list[HyperparameterMetadata]:
         """Retrieve all hyperparameters associated with a specific algorithm."""
