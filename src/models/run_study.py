@@ -1,9 +1,16 @@
 import logging
+from datetime import datetime
 
 from src.models.ablation_study import AblationOrchestrator
 from src.models.const import ModelAlgorithm
 from src.data.file_loader import load_csv_data
-from src.utils.const import PROCESSED_DATA_DIR, PROCESSED_FEATURES_DATASET_FILENAME
+from src.utils.const import (
+    PROCESSED_DATA_DIR, 
+    PROCESSED_FEATURES_DATASET_FILENAME, 
+    LOGS_DIR,
+    ABLATION_STUDY_LOG_FILENAME,
+    LOG_FORMAT
+)
 
 logger = logging.getLogger(__name__)
 
@@ -11,11 +18,12 @@ logger = logging.getLogger(__name__)
 def run_ablation_study() -> None:
     """Run ablation study for all algorithms."""
     # Setup logging to both console and file
+    timestamp = datetime.now().isoformat()
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s - %(levelname)s - %(message)s',
+        format=LOG_FORMAT,
         handlers=[
-            logging.FileHandler("ablation_study.log"),
+            logging.FileHandler(LOGS_DIR / f"{ABLATION_STUDY_LOG_FILENAME}_{timestamp}.log"),
             logging.StreamHandler()
         ]
     )

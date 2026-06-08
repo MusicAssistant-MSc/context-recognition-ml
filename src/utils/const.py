@@ -14,6 +14,10 @@ REPORTS_DIR = PROJECT_ROOT / 'src' / 'reports'
 
 SAVED_MODELS_DIR = PROJECT_ROOT / 'models'
 
+LOGS_DIR = PROJECT_ROOT / 'logs'
+LOG_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
+ABLATION_STUDY_LOG_FILENAME = 'ablation_study'
+
 PANDAS_DF_UNNAMED_COL_PREFIX = 'Unnamed: '
 
 class SiTunesInterimInterEnvCols:
