@@ -12,6 +12,8 @@ PROCESSED_FEATURES_DATASET_FILENAME = 'processed_features_dataset.csv'
 
 REPORTS_DIR = PROJECT_ROOT / 'src' / 'reports'
 
+SAVED_MODELS_DIR = PROJECT_ROOT / 'models'
+
 PANDAS_DF_UNNAMED_COL_PREFIX = 'Unnamed: '
 
 class SiTunesInterimInterEnvCols:

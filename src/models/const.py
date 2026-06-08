@@ -1,8 +1,10 @@
 from enum import StrEnum, auto
-from typing import Final
+from typing import Final, Any
 from pathlib import Path
+from dataclasses import dataclass
 
 from src.utils.const import SiTunesInterimInterEnvCols, SiTunesInterimMusicCols, SAVED_MODELS_DIR, REPORTS_DIR
+from src.features.const import PreprocessingStrategy
 
 
 class ModelAlgorithm(StrEnum):
@@ -34,6 +36,27 @@ class RegressionMetrics(StrEnum):
     MAE = auto()
     MSE = auto()
     RMSE = auto()
+
+
+@dataclass(frozen=True)
+class FoldResult:
+    """Standardized results for a single outer fold in Nested CV."""
+    fold: int
+    metrics: dict[str, float]
+    best_params: dict[str, Any]
+
+
+@dataclass(frozen=True)
+class ExperimentResult:
+    """Complete results for one ablation variant (algorithm + feature set)."""
+    algorithm: ModelAlgorithm
+    variant_name: str
+    feature_names: list[str]
+    folds: list[FoldResult]
+    mean_metrics: dict[str, float]
+    std_metrics: dict[str, float]
+    timestamp: str
+    duration_seconds: float
 
 
 # Random state constant
@@ -78,4 +101,14 @@ RANDOMIZED_SEARCH_N_JOBS: Final[int] = -1 # Use all available CPU cores for tuni
 TREE_MODELS_WITH_NATIVE_NAN_SUPPORT: Final[set[ModelAlgorithm]] = {
     ModelAlgorithm.XGBOOST,
     ModelAlgorithm.LIGHTGBM
+}
+
+# Algorithm to preprocessingStrategy mapping
+ALGORITHM_PRECEPTION_MAP: Final[dict[ModelAlgorithm, PreprocessingStrategy]] = {
+    ModelAlgorithm.XGBOOST: PreprocessingStrategy.TREE_BASED,
+    ModelAlgorithm.LIGHTGBM: PreprocessingStrategy.TREE_BASED,
+    ModelAlgorithm.RANDOM_FOREST: PreprocessingStrategy.TREE_BASED,
+    ModelAlgorithm.SVR: PreprocessingStrategy.DISTANCE_BASED,
+    ModelAlgorithm.MLP: PreprocessingStrategy.DISTANCE_BASED,
+    ModelAlgorithm.RIDGE: PreprocessingStrategy.DISTANCE_BASED
 }
