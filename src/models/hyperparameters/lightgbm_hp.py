@@ -38,8 +38,8 @@ LIGHTGBM_HYPERPARAMETERS: list[HyperparameterMetadata] = [
         name=LightGBMHyperparametersNames.N_JOBS,
         algorithm=ModelAlgorithm.LIGHTGBM,
         search_space_factory=None,
-        const_value=-1,
-        description="Use all available CPU cores."
+        const_value=1,
+        description="Use a single CPU core for training."
     ),
     HyperparameterMetadata(
         name=LightGBMHyperparametersNames.VERBOSITY,

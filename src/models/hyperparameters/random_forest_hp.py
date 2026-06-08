@@ -38,8 +38,8 @@ RANDOM_FOREST_HYPERPARAMETERS: list[HyperparameterMetadata] = [
         name=RandomForestHyperparametersNames.N_JOBS,
         algorithm=ModelAlgorithm.RANDOM_FOREST,
         search_space_factory=None,
-        const_value=-1,
-        description="Utilize all available CPU cores for parallel forest construction."
+        const_value=1,
+        description="Use a single CPU core for training."
     ),
     HyperparameterMetadata(
         name=RandomForestHyperparametersNames.RANDOM_STATE,

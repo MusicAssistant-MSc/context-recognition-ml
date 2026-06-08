@@ -16,7 +16,7 @@ class RidgeHyperparametersNames(StrEnum):
     
 
 RIDGE_HYPERPARAMETERS: list[HyperparameterMetadata] = [
-    # Constant parameters for LightGBM
+    # Constant parameters for Ridge
     HyperparameterMetadata(
         name=RidgeHyperparametersNames.FIT_INTERCEPT,
         algorithm=ModelAlgorithm.RIDGE,
@@ -59,7 +59,7 @@ RIDGE_HYPERPARAMETERS: list[HyperparameterMetadata] = [
         const_value=RANDOM_STATE,
         description="Random seed."
     ),
-    # Tunable parameters for LightGBM
+    # Tunable parameters for Ridge
     HyperparameterMetadata(
         name=RidgeHyperparametersNames.ALPHA,
         algorithm=ModelAlgorithm.RIDGE,
