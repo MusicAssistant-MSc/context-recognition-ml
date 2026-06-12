@@ -3,7 +3,14 @@ from typing import Final, Any
 from pathlib import Path
 from dataclasses import dataclass
 
-from src.utils.const import SiTunesInterimInterEnvCols, SiTunesInterimMusicCols, SAVED_MODELS_DIR, REPORTS_DIR
+from src.utils.const import (
+    SiTunesInterimInterEnvCols, 
+    SiTunesInterimMusicCols, 
+    SAVED_MODELS_DIR, 
+    REPORTS_DIR,
+    FILE_TIMESTAMP_FORMAT,
+    FILE_TIMESTAMP_SUFFIX_PATTERN
+)
 from src.features.const import PreprocessingStrategy
 
 
@@ -71,6 +78,8 @@ SUMMARY_CSV_NAME: Final[str] = "experiment_summary.csv"
 SAVED_MODELS_DIR: Final[Path] = SAVED_MODELS_DIR
 REPORTS_DIR: Final[Path] = REPORTS_DIR
 METRICS_DIR: Final[Path] = REPORTS_DIR / "metrics"
+FILE_TIMESTAMP_FORMAT: Final[str] = FILE_TIMESTAMP_FORMAT
+FILE_TIMESTAMP_SUFFIX_PATTERN: Final[str] = FILE_TIMESTAMP_SUFFIX_PATTERN
 
 # Default hyperparameter name prefix
 HYPERPARAMETER_MODEL_PREFIX: Final[str] = "model"
@@ -112,3 +121,6 @@ ALGORITHM_PRECEPTION_MAP: Final[dict[ModelAlgorithm, PreprocessingStrategy]] = {
     ModelAlgorithm.MLP: PreprocessingStrategy.DISTANCE_BASED,
     ModelAlgorithm.RIDGE: PreprocessingStrategy.DISTANCE_BASED
 }
+
+# --- Default parameters for statistical tests and model evaluation ---
+MIN_MODELS_FOR_FRIEDMAN_TEST: Final[int] = 3

@@ -14,7 +14,8 @@ from src.models.const import (
     SUMMARY_CSV_NAME, 
     SAVED_MODELS_DIR, 
     REPORTS_DIR, 
-    METRICS_DIR
+    METRICS_DIR,
+    FILE_TIMESTAMP_FORMAT
 )
 
 logger = logging.getLogger(__name__)
@@ -67,7 +68,8 @@ def save_experiment_results(
     metrics_output_dir: Path = METRICS_DIR,
     metrics_ext: str = METRICS_EXT,
     summary_dir: Path | None = REPORTS_DIR,
-    summary_csv_name: str = SUMMARY_CSV_NAME
+    summary_csv_name: str = SUMMARY_CSV_NAME,
+    timestamp_format: str = FILE_TIMESTAMP_FORMAT
 ) -> None:
     """
     Save detailed experiment metrics and parameters to JSON.
@@ -85,7 +87,7 @@ def save_experiment_results(
         None
     """
     _ensure_dir_exists(metrics_output_dir)
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now().strftime(timestamp_format)
     json_path = metrics_output_dir / f"{experiment_name}_{timestamp}{metrics_ext}"
 
     logger.info(f"Saving experiment results to {json_path}...")
