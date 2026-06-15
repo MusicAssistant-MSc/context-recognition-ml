@@ -13,9 +13,14 @@ def build_one_hot_encoder(handle_unknown: str, sparse_output: bool) -> OneHotEnc
     )
 
 
-def build_quantile_transformer(quantile_out_dist: str, random_state: int) -> QuantileTransformer:
+def build_quantile_transformer(
+    n_quantiles: int,
+    quantile_out_dist: str, 
+    random_state: int
+) -> QuantileTransformer:
     """Build configured QuantileTransformer."""
     return QuantileTransformer(
+        n_quantiles=n_quantiles,
         output_distribution=quantile_out_dist,
         random_state=random_state
     )
@@ -58,7 +63,7 @@ def get_numeric_feature_names(feature_names: list[str], feature_registry: Featur
         list[str]: A list of feature names representing numeric features.
     """
     feature_metadata = feature_registry.get_features(feature_names)
-    numeric_features = feature_registry.filter(kind=FeatureKind.NUMERIC, source=feature_metadata)
+    numeric_features = feature_registry.filter(kind=FeatureKind.NUMERICAL, source=feature_metadata)
     numeric_names = feature_registry.get_names(numeric_features)
     return numeric_names
 

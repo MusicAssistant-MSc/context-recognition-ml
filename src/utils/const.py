@@ -1,5 +1,6 @@
 from pathlib import Path
 from enum import IntEnum
+from typing import Final
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
@@ -11,6 +12,22 @@ PROCESSED_DATA_DIR = DATA_DIR / 'processed'
 PROCESSED_FEATURES_DATASET_FILENAME = 'processed_features_dataset.csv'
 
 REPORTS_DIR = PROJECT_ROOT / 'src' / 'reports'
+
+SAVED_MODELS_DIR = PROJECT_ROOT / 'models'
+
+LOGS_DIR = PROJECT_ROOT / 'logs'
+LOG_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
+ABLATION_STUDY_LOG_FILENAME = 'ablation_study'
+
+# Standard timestamp format for filenames
+# Example: 20240522_153000
+FILE_TIMESTAMP_FORMAT: Final[str] = "%Y%m%d_%H%M%S"
+# Regex to match the above format preceded by an underscore at the end of a string
+FILE_TIMESTAMP_SUFFIX_PATTERN: Final[str] = r"_\d{8}_\d{6}$"
+
+# --- Statistical tests constants ---
+ALPHA_SIGNIFICANCE_LEVEL: Final[float] = 0.05
+POSTHOC_CONOVER_P_ADJUST: Final[str] = "holm"
 
 PANDAS_DF_UNNAMED_COL_PREFIX = 'Unnamed: '
 

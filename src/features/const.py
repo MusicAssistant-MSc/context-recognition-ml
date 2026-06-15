@@ -92,6 +92,7 @@ KURT_EXTREME_THRESHOLD: Final[float] = 3.0
 KURT_MODERATE_THRESHOLD: Final[float] = 1.0
 
 # Quantile transformer defaults
+QUANTILE_N_QUANTILES: Final[int] = 100
 QUANTILE_OUTPUT_DISTRIBUTION: Final[str] = "normal"
 QUANTILE_RANDOM_STATE: Final[int] = 42
 

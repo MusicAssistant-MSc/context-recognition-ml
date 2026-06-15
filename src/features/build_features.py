@@ -26,6 +26,7 @@ def build_features(
     output_filename: str = PROCESSED_FEATURES_DATASET_FILENAME,
     inter_id_col: str = const.SiTunesInterimInterEnvCols.INTER_ID,
     item_id_col: str = const.SiTunesInterimInterEnvCols.ITEM_ID,
+    user_id_col: str = const.SiTunesInterimInterEnvCols.USER_ID,
     target_col: str = const.SiTunesInterimInterEnvCols.RATING
 ) -> None:
     """
@@ -41,6 +42,7 @@ def build_features(
         output_filename (str): The filename for the processed features dataset CSV file.
         inter_id_col (str): The name of the column representing interaction IDs in the datasets.
         item_id_col (str): The name of the column representing item IDs in the datasets.
+        user_id_col (str): The name of the column representing user IDs in the datasets.
         target_col (str): The name of the column representing the target variable (e.g., rating) in the datasets.
 
     Returns:
@@ -79,7 +81,7 @@ def build_features(
     logger.info("Merging interaction-level features (bio, motion, context, emotion)...")
     inter_master_df = pd.concat([bio_df, motion_df, context_df, emotion_df], axis=1)
 
-    mapping_df = inter_env_df[[inter_id_col, item_id_col, target_col]].copy().set_index(inter_id_col)
+    mapping_df = inter_env_df[[inter_id_col, item_id_col, target_col, user_id_col]].copy().set_index(inter_id_col)
 
     logger.info("Joining interaction-level features with music features...")
     # Join the interaction-level features with music features using indices

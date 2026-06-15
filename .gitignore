@@ -17,3 +17,7 @@ src/playground/*
 # Ignore reports directory contents except for gitkeep file
 src/reports/*
 !src/reports/.gitkeep
+
+# Ignore logs directory contents except for gitkeep file
+logs/*
+!logs/.gitkeep
