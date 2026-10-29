@@ -66,6 +66,15 @@ class ExperimentResult:
     duration_seconds: float
 
 
+class ExperimentSummaryColumn(StrEnum):
+    """Column names for the global experiment summary CSV."""
+    ALGORITHM = "Algorithm"
+    VARIANT = "Variant"
+    TIMESTAMP = "Timestamp"
+    DURATION_SECONDS = "Duration (s)"
+    FEATURES_COUNT = "Features_Count"
+
+
 # Random state constant
 RANDOM_STATE: Final[int] = 42
 
