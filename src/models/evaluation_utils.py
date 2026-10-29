@@ -10,12 +10,12 @@ from src.models.const import RegressionMetrics, METRICS_DIR, FILE_TIMESTAMP_SUFF
 logger = logging.getLogger(__name__)
 
 
-def load_ablation_study_metrics(
+def load_experimental_results_metrics(
     metrics_dir: Path = METRICS_DIR,
     metrics_names: list[str] = list(RegressionMetrics),
     timestamp_suffix_pattern: str = FILE_TIMESTAMP_SUFFIX_PATTERN
 ) -> dict[str, dict[str, list[float]]]:
-    """Load ablation study metrics from a directory of JSON files.
+    """Load both aggregated and non-aggregated experimental results metrics from a directory of JSON files.
     
     Args:
         metrics_dir (Path): The directory containing JSON files with metrics.
@@ -53,7 +53,7 @@ def get_metric_matrix(
     - Rows: Fold indices
 
     Args:
-        all_results (dict[str, dict[str, list[float]]]): Output from load_ablation_study_metrics.
+        all_results (dict[str, dict[str, list[float]]]): Output from load_experimental_results_metrics.
         target_metric (str): The name of the metric to extract (e.g., 'mae').
 
     Returns:

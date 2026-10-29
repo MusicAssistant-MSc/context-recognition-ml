@@ -17,7 +17,7 @@ SAVED_MODELS_DIR = PROJECT_ROOT / 'models'
 
 LOGS_DIR = PROJECT_ROOT / 'logs'
 LOG_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
-ABLATION_STUDY_LOG_FILENAME = 'ablation_study'
+EXPERIMENT_RUN_LOG_FILENAME = 'full_experiment_run'
 
 # Standard timestamp format for filenames
 # Example: 20240522_153000

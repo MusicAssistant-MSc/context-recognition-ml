@@ -25,7 +25,7 @@ class ModelAlgorithm(StrEnum):
 
 
 class ModelVariant(StrEnum):
-    """Ablation study model variants based on feature sets."""
+    """Experimental model variants based on feature sets."""
     BIOMETRIC = auto()
     MOTION = auto()
     CONTEXT = auto()
@@ -55,7 +55,7 @@ class FoldResult:
 
 @dataclass(frozen=True)
 class ExperimentResult:
-    """Complete results for one ablation variant (algorithm + feature set)."""
+    """Complete results for one experimental model (algorithm + feature set)."""
     algorithm: ModelAlgorithm
     variant_name: str
     feature_names: list[str]
