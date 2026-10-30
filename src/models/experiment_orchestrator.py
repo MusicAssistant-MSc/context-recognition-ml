@@ -13,7 +13,7 @@ from src.models import persistence
 logger = logging.getLogger(__name__)
 
 
-class AblationOrchestrator:
+class ExperimentOrchestrator:
     def __init__(self, data: pd.DataFrame):
         self.data = data
         # Base mandatory features
@@ -53,15 +53,15 @@ class AblationOrchestrator:
                 
         return variants
     
-    def run_full_study(
+    def run_full_experiment(
         self, 
         algorithms: list[ModelAlgorithm], 
         preception_map: dict[ModelAlgorithm, PreprocessingStrategy] = ALGORITHM_PRECEPTION_MAP
     ) -> None:
-        """Run the entire ablation study for a given list of algorithms.
+        """Run the entire experiment pipeline for a given list of algorithms.
         
         Args:
-            algorithms (list[ModelAlgorithm]): List of algorithms to run the study for.
+            algorithms (list[ModelAlgorithm]): List of algorithms to run the experiment for.
             preception_map (dict[ModelAlgorithm, PreprocessingStrategy], optional): Mapping of algorithms to preprocessing strategies. Defaults to ALGORITHM_PRECEPTION_MAP.
 
         Returns:

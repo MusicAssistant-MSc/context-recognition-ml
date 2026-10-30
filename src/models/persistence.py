@@ -9,6 +9,7 @@ from dataclasses import asdict
 
 from src.models.const import (
     ExperimentResult,
+    ExperimentSummaryColumn,
     MODEL_EXT, 
     METRICS_EXT, 
     SUMMARY_CSV_NAME, 
@@ -117,11 +118,11 @@ def _update_summary_results(
     summary_path = summary_dir / summary_csv_name
 
     summary_row = {
-        "Algorithm": results.algorithm.value,
-        "Variant": results.variant_name,
-        "Timestamp": results.timestamp,
-        "Duration (s)": results.duration_seconds,
-        "Features_Count": len(results.feature_names)
+        ExperimentSummaryColumn.ALGORITHM: results.algorithm.value,
+        ExperimentSummaryColumn.VARIANT: results.variant_name,
+        ExperimentSummaryColumn.TIMESTAMP: results.timestamp,
+        ExperimentSummaryColumn.DURATION_SECONDS: results.duration_seconds,
+        ExperimentSummaryColumn.FEATURES_COUNT: len(results.feature_names)
     }
 
     for k, v in results.mean_metrics.items():
