@@ -8,8 +8,16 @@ data/interim/*
 !data/processed/.gitkeep
 !data/interim/.gitkeep
 
-# Ignore __pycache__ directories
+# Ignore Python cache directories
 __pycache__/
+*.py[cod]
+
+# Ignore Python packaging
+*.egg-info/
+
+# Ignore virtual environment
+.venv/
+venv/
 
 # Ignore playground directory contents
 src/playground/*
