@@ -1,7 +1,9 @@
 from src.utils.const import RAW_DATA_DIR, INTERIM_DATA_DIR, SiTunesInterimInterEnvCols
 
 # --- SiTunes raw data to interim processing constants ---
-SITUNES_DATA_DIR = RAW_DATA_DIR / 'SiTunes'
+SITUNES_GITHUB_REPO_ZIP_URL = "https://github.com/JiayuLi-997/SiTunes_dataset/archive/refs/heads/main.zip"
+SITUNES_GITHUB_REPO_DATA_DIR = 'SiTunes'
+SITUNES_DATA_DIR = RAW_DATA_DIR / SITUNES_GITHUB_REPO_DATA_DIR
 SITUNES_REDUNDANT_COL_SUFFIX = '_redundant'
 SITUNES_FLOAT_ROUNDING_PRECISION = 6
 

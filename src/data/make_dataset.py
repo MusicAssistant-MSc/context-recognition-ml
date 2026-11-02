@@ -1,7 +1,8 @@
 from pathlib import Path
 import logging
+import argparse
 
-from src.data import file_loader, situnes_music_loader, situnes_stage_loader
+from src.data import file_loader, situnes_music_loader, situnes_stage_loader, download_dataset
 from src.data import const
 
 
@@ -11,7 +12,7 @@ def build_interim_data(
     output_inter_env_data_filename: str = const.SITUNES_MERGED_INTER_ENV_DATA_FILENAME,
     output_wrist_data_filename: str = const.SITUNES_MERGED_WRIST_DATA_FILENAME
 ) -> None:
-    """Main pipeline function to process raw SiTunes data and transform it into interim datasets.
+    """Main pipeline function to download and process raw SiTunes data and transform it into interim datasets.
     
     Args:
         interim_data_dir (Path): The directory where interim datasets will be saved.
@@ -23,6 +24,22 @@ def build_interim_data(
         None
     """
     logger = logging.getLogger(__name__)
+    parser = argparse.ArgumentParser(description="Raw SiTunes data download and processing orchestrator")
+    parser.add_argument("--skip-download", action="store_true", help="Skip downloading the raw dataset if it already exists.")
+    parser.add_argument("--force-download", action="store_true", help="Force re-download of the raw dataset even if it exists.")
+    args = parser.parse_args()
+
+    if not args.skip_download:
+        logger.info("Downloading raw SiTunes dataset.")
+        download_dataset.download_and_extract_github_dataset(
+            dataset_zip_url=const.SITUNES_GITHUB_REPO_ZIP_URL,
+            relative_source_data_dir=const.SITUNES_GITHUB_REPO_DATA_DIR,
+            target_dir=const.SITUNES_DATA_DIR,
+            force_download=args.force_download
+        )
+    else:
+        logger.info("Skipping raw SiTunes dataset download.")
+
     logger.info("Starting SiTunes processing: raw to interim.")
 
     # Load and merge music metadata
@@ -53,7 +70,6 @@ def build_interim_data(
     file_loader.save_npy_data(array=merged_wrist_data_array, filepath=merged_wrist_data_path)
 
     logger.info("SiTunes processing completed: raw to interim.")
-
 
 
 if __name__ == '__main__':
