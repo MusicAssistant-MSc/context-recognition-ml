@@ -12,6 +12,7 @@ dependencies = [
     "neurokit2>=0.2.12",
     "numpy>=2.0.0",
     "pandas>=2.2.3, <3.0.0",
+    "papermill>=2.7.0",
     "pingouin>=0.6.1",
     "polars>=1.39.3",
     "scikit-learn>=1.8.0",
