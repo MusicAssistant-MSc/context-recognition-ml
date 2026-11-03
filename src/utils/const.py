@@ -20,10 +20,10 @@ LOG_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
 EXPERIMENT_RUN_LOG_FILENAME = 'full_experiment_run'
 
 # Standard timestamp format for filenames
-# Example: 20240522_153000
-FILE_TIMESTAMP_FORMAT: Final[str] = "%Y%m%d_%H%M%S"
+# Example: 2024-05-22_153000
+FILE_TIMESTAMP_FORMAT: Final[str] = "%Y-%m-%d_%H%M%S"
 # Regex to match the above format preceded by an underscore at the end of a string
-FILE_TIMESTAMP_SUFFIX_PATTERN: Final[str] = r"_\d{8}_\d{6}$"
+FILE_TIMESTAMP_SUFFIX_PATTERN: Final[str] = r"_\d{4}-\d{2}-\d{2}_\d{6}$"
 
 # --- Statistical tests constants ---
 ALPHA_SIGNIFICANCE_LEVEL: Final[float] = 0.05

@@ -25,6 +25,7 @@ from src.models.cross_validation import get_nested_cv_setup
 from src.models.metrics import calculate_regression_metrics
 from src.models.utils import use_imputer_for_tree_model
 from src.features.preprocessing import build_feature_preprocessor, PreprocessingStrategy
+from src.utils.time_utils import get_current_timestamp_for_log
 
 logger = logging.getLogger(__name__)
 
@@ -100,7 +101,7 @@ def _aggregate_folds_results(
         folds=fold_results, 
         mean_metrics=mean_metrics, 
         std_metrics=std_metrics,
-        timestamp=datetime.now().isoformat(),
+        timestamp=get_current_timestamp_for_log(),
         duration_seconds=duration_seconds
     )
 

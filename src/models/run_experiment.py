@@ -11,6 +11,7 @@ from src.utils.const import (
     EXPERIMENT_RUN_LOG_FILENAME,
     LOG_FORMAT
 )
+from src.utils.time_utils import get_current_timestamp_for_filename
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +19,7 @@ logger = logging.getLogger(__name__)
 def run_full_experiment() -> None:
     """Run full experiment for all algorithms."""
     # Setup logging to both console and file
-    timestamp = datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+    timestamp = get_current_timestamp_for_filename()
     logging.basicConfig(
         level=logging.INFO,
         format=LOG_FORMAT,
