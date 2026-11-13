@@ -2,6 +2,7 @@ import logging
 from pathlib import Path
 import pandas as pd
 
+from src.utils.logging_config import setup_logging
 from src.utils.const import INTERIM_DATA_DIR, PROCESSED_DATA_DIR, PROCESSED_FEATURES_DATASET_FILENAME
 from src.data.const import (
     SITUNES_MERGED_MUSIC_METADATA_FILENAME, 
@@ -15,6 +16,8 @@ from src.features.motion_features import extract_motion_features
 from src.features.context_features import extract_context_features
 from src.features.music_features import extract_music_features
 from src.features.emo_features import extract_emotion_features
+
+logger = logging.getLogger(__name__)
 
 
 def build_features(
@@ -48,7 +51,6 @@ def build_features(
     Returns:
         None
     """
-    logger = logging.getLogger(__name__)
     logger.info("Starting feature extraction and merging...")
 
     # Load interim datasets
@@ -104,5 +106,5 @@ def build_features(
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    setup_logging()
     build_features()

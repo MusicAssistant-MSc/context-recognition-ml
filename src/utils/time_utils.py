@@ -21,3 +21,15 @@ def get_current_timestamp_for_log() -> str:
     """
     utc_now = datetime.now(timezone.utc)
     return utc_now.isoformat(timespec='milliseconds')
+
+
+def format_utc_log_timestamp_to_rfc(timestamp: datetime) -> str:
+    """Format a UTC timestamp for logging in RFC 3339 format.
+
+    Args:
+        timestamp (datetime): The UTC timestamp to format.
+
+    Returns:
+        str: The current UTC timestamp in the format 'YYYY-MM-DD HH:MM:SS.mmmZ'.
+    """
+    return timestamp.astimezone(timezone.utc).isoformat(sep=' ', timespec='milliseconds').replace('+00:00', 'Z')

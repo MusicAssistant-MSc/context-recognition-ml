@@ -2,8 +2,11 @@ from pathlib import Path
 import logging
 import argparse
 
+from src.utils.logging_config import setup_logging
 from src.data import file_loader, situnes_music_loader, situnes_stage_loader, download_dataset
 from src.data import const
+
+logger = logging.getLogger(__name__)
 
 
 def build_interim_data(
@@ -23,7 +26,6 @@ def build_interim_data(
     Returns:
         None
     """
-    logger = logging.getLogger(__name__)
     parser = argparse.ArgumentParser(description="Raw SiTunes data download and processing orchestrator")
     parser.add_argument("--skip-download", action="store_true", help="Skip downloading the raw dataset if it already exists.")
     parser.add_argument("--force-download", action="store_true", help="Force re-download of the raw dataset even if it exists.")
@@ -73,5 +75,5 @@ def build_interim_data(
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    setup_logging()
     build_interim_data()
