@@ -4,6 +4,43 @@ from typing import Final
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
+# --- Pipeline run ID environment variable ---
+PIPELINE_RUN_ID_ENV_VAR = "RUN_ID"
+
+# --- Pipeline CLI argument flags ---
+class CliArgsConfigKeys:
+    NAME: str = 'name'
+    DEST: str = 'dest'
+    ACTION: str = 'action'
+    HELP: str = 'help'
+    EXCLUSIVE_GROUP: str = 'exclusive_group'
+
+DATA_CLI_ARGS = [
+    {
+        CliArgsConfigKeys.NAME: "--skip-download",
+        CliArgsConfigKeys.DEST: "skip_download",
+        CliArgsConfigKeys.ACTION: "store_true",
+        CliArgsConfigKeys.HELP: "Skip downloading the raw dataset if it already exists.",
+        CliArgsConfigKeys.EXCLUSIVE_GROUP: "data_download"
+    },
+    {
+        CliArgsConfigKeys.NAME: "--force-download",
+        CliArgsConfigKeys.DEST: "force_download",
+        CliArgsConfigKeys.ACTION: "store_true",
+        CliArgsConfigKeys.HELP: "Force re-download of the raw dataset.",
+        CliArgsConfigKeys.EXCLUSIVE_GROUP: "data_download"
+    },
+]
+
+NOTEBOOK_CLI_ARGS = [
+    {
+        CliArgsConfigKeys.NAME: "--skip-notebook",
+        CliArgsConfigKeys.DEST: "skip_notebook",
+        CliArgsConfigKeys.ACTION: "store_true",
+        CliArgsConfigKeys.HELP: "Skip execution of the statistical evaluation notebooks."
+    }
+]
+
 DATA_DIR = PROJECT_ROOT / 'data'
 RAW_DATA_DIR = DATA_DIR / 'raw'
 INTERIM_DATA_DIR = DATA_DIR / 'interim'

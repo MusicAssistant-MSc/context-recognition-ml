@@ -1,8 +1,9 @@
 from pathlib import Path
 import logging
-import argparse
 
 from src.utils.logging_config import setup_logging
+from src.utils.run_utils import parse_args
+from src.utils.const import DATA_CLI_ARGS
 from src.data import file_loader, situnes_music_loader, situnes_stage_loader, download_dataset
 from src.data import const
 
@@ -26,10 +27,7 @@ def build_interim_data(
     Returns:
         None
     """
-    parser = argparse.ArgumentParser(description="Raw SiTunes data download and processing orchestrator")
-    parser.add_argument("--skip-download", action="store_true", help="Skip downloading the raw dataset if it already exists.")
-    parser.add_argument("--force-download", action="store_true", help="Force re-download of the raw dataset even if it exists.")
-    args = parser.parse_args()
+    args = parse_args("Raw SiTunes data download and processing orchestrator", DATA_CLI_ARGS)
 
     if not args.skip_download:
         logger.info("Downloading raw SiTunes dataset.")
