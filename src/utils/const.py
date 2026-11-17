@@ -50,6 +50,9 @@ PROCESSED_FEATURES_DATASET_FILENAME = 'processed_features_dataset.csv'
 
 REPORTS_DIR = PROJECT_ROOT / 'src' / 'reports'
 
+NOTEBOOKS_DIR = PROJECT_ROOT / 'src' / 'notebooks'
+NOTEBOOKS_OUTPUT_DIR = REPORTS_DIR / 'notebooks'
+
 SAVED_MODELS_DIR = PROJECT_ROOT / 'models'
 
 LOGS_DIR = PROJECT_ROOT / 'logs'
